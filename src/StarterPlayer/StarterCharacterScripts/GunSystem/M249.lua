@@ -10,7 +10,6 @@ local UserInputService = game:GetService("UserInputService")
 local Settings = require(game.ReplicatedStorage.GunSystem.Settings.M249)
 local core = require(game.ReplicatedStorage.Modules.Core)
 local waitForPath = core("waitForPath")
-local controlAnims = core("controlAnims")
 local thirdPersonCamera = require(game.ReplicatedStorage.GunSystem.Modules.ThirdPersonCamera)
 
 -- objects
@@ -32,18 +31,11 @@ end
 function module:onActiveCameraSettingsChanged(newCameraSettings: String)
     if newCameraSettings == "DefaultShoulder" then
         -- Stops all animations but starts holding animation
-        controlAnims({
-            self.animations.runningHold, "STOP_ASYNC",
-            self.animations.aim, "STOP_ASYNC",
-            self.animations.hold, "START_ASYNC"
-        })
+        self.animations.aim:Stop()
+        self.animations.hold:Play()
     elseif newCameraSettings == "ZoomedShoulder" then
         -- Stops all animations but starts aim animation
-        controlAnims({
-            self.animations.hold, "STOP_ASYNC",
-            self.animations.runningHold, "STOP_ASYNC",
-            self.animations.aim, "START_ASYNC"
-        })
+        self.animations.aim:Play()
     end
 end
 
@@ -55,13 +47,9 @@ function module:onInputBegan(input, gameProcessed)
     end
 
     if input.KeyCode == Settings.keybinds.reload then
-        controlAnims({
-            self.animations.hold, "STOP_ASYNC",
-            self.animations.runningHold, "STOP_ASYNC",
-            self.animations.aim, "STOP_ASYNC",
-            self.animations.reload, "START_SYNC",
-            self.animations.hold, "START_ASYNC"
-        })
+        self.animations.reload:Play()
+        self.animations.reload.Stopped:Wait()
+        self.animations.hold:Play()
     end
 end
 
@@ -78,9 +66,7 @@ function module:onToolEquipped(playerMouse)
 
 
     -- play hold animation
-    controlAnims{
-        self.animations.hold, "START_ASYNC"
-    }
+    self.animations.hold:Play()
 end
 
 function module:onToolUnequipped()
@@ -88,12 +74,10 @@ function module:onToolUnequipped()
     thirdPersonCamera:Disable()
 
     -- stop all animations
-    controlAnims({
-        self.animations.hold, "STOP_SYNC",
-        self.animations.runningHold, "STOP_SYNC",
-        self.animations.aim, "STOP_SYNC",
-        self.animations.reload, "STOP_SYNC"
-    })
+    self.animations.runningHold:Stop()
+    self.animations.hold:Stop()
+    self.animations.aim:Stop()
+    self.animations.reload:Stop()
 end
 
 -- init
