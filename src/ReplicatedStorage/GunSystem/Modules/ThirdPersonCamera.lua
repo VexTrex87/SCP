@@ -357,7 +357,9 @@ USER_INPUT_SERVICE.InputBegan:Connect(function(inputObject, gameProcessedEvent)
 			singleton:SetShoulderDirection(1)
 		end
 		if inputObject.UserInputType == Enum.UserInputType.MouseButton2 then
-			singleton:SetActiveCameraSettings("ZoomedShoulder")
+			if LOCAL_PLAYER.Character:FindFirstChildWhichIsA("Tool") then
+				singleton:SetActiveCameraSettings("ZoomedShoulder")
+			end
 		end
 		
 		if inputObject.KeyCode == Enum.KeyCode.LeftControl then
@@ -371,7 +373,9 @@ end)
 USER_INPUT_SERVICE.InputEnded:Connect(function(inputObject, gameProcessedEvent)
 	if gameProcessedEvent == false and singleton.IsEnabled == true then
 		if inputObject.UserInputType == Enum.UserInputType.MouseButton2 then
-			singleton:SetActiveCameraSettings("DefaultShoulder")
+			if LOCAL_PLAYER.Character:FindFirstChildWhichIsA("Tool") then
+				singleton:SetActiveCameraSettings("DefaultShoulder")
+			end
 		end
 	end
 end)

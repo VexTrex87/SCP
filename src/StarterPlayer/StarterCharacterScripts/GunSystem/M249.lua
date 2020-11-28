@@ -10,6 +10,7 @@ local UserInputService = game:GetService("UserInputService")
 local Settings = require(game.ReplicatedStorage.GunSystem.Settings.M249)
 local core = require(game.ReplicatedStorage.Modules.Core)
 local waitForPath = core("waitForPath")
+local controlAnims = core("controlAnims")
 local thirdPersonCamera = require(game.ReplicatedStorage.GunSystem.Modules.ThirdPersonCamera)
 
 -- objects
@@ -31,14 +32,18 @@ end
 function module:onActiveCameraSettingsChanged(newCameraSettings: String)
     if newCameraSettings == "DefaultShoulder" then
         -- Stops all animations but starts holding animation
-        self.animations.hold:Play()
-        self.animations.runningHold:Stop()
-        self.animations.aim:Stop()
+        controlAnims({
+            self.animations.runningHold, "STOP_ASYNC",
+            self.animations.aim, "STOP_ASYNC",
+            self.animations.hold, "START_ASYNC"
+        })
     elseif newCameraSettings == "ZoomedShoulder" then
         -- Stops all animations but starts aim animation
-        self.animations.hold:Stop()
-        self.animations.runningHold:Stop()
-        self.animations.aim:Play()
+        controlAnims({
+            self.animations.hold, "STOP_ASYNC",
+            self.animations.runningHold, "STOP_ASYNC",
+            self.animations.aim, "START_ASYNC"
+        })
     end
 end
 
@@ -50,19 +55,19 @@ function module:onInputBegan(input, gameProcessed)
     end
 
     if input.KeyCode == Settings.keybinds.reload then
-        self.animations.hold:Stop()
-        self.animations.runningHold:Stop()
-        self.animations.aim:Stop()
-        self.animations.reload:Play()
+        controlAnims({
+            self.animations.hold, "STOP_ASYNC",
+            self.animations.runningHold, "STOP_ASYNC",
+            self.animations.aim, "STOP_ASYNC",
+            self.animations.reload, "START_SYNC",
+            self.animations.hold, "START_ASYNC"
+        })
     end
 end
 
 -- object direct
 
 function module:onToolEquipped(playerMouse)
-    -- play hold animation
-    self.animations.hold:Play()
-
     -- start third person camera
     thirdPersonCamera:Enable()
     thirdPersonCamera:SetCharacterAlignment(true)
@@ -71,17 +76,24 @@ function module:onToolEquipped(playerMouse)
     self.temp.mouse = playerMouse
     self:updateMouseIcon()
 
+
+    -- play hold animation
+    controlAnims{
+        self.animations.hold, "START_ASYNC"
+    }
 end
 
 function module:onToolUnequipped()
-    -- stop all animations
-    self.animations.hold:Stop()
-    self.animations.runningHold:Stop()
-    self.animations.aim:Stop()
-    self.animations.reload:Stop()
-
     -- stop third person camera
     thirdPersonCamera:Disable()
+
+    -- stop all animations
+    controlAnims({
+        self.animations.hold, "STOP_SYNC",
+        self.animations.runningHold, "STOP_SYNC",
+        self.animations.aim, "STOP_SYNC",
+        self.animations.reload, "STOP_SYNC"
+    })
 end
 
 -- init
