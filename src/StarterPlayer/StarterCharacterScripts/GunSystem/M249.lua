@@ -8,9 +8,12 @@ local UserInputService = game:GetService("UserInputService")
 
 -- modules
 local Settings = require(game.ReplicatedStorage.GunSystem.Settings.M249)
+local thirdPersonCamera = require(game.ReplicatedStorage.GunSystem.Modules.ThirdPersonCamera)
+
+-- libraries
 local core = require(game.ReplicatedStorage.Modules.Core)
 local waitForPath = core("waitForPath")
-local thirdPersonCamera = require(game.ReplicatedStorage.GunSystem.Modules.ThirdPersonCamera)
+local disconnectConnections = core("disconnectConnections")
 
 -- objects
 local player = game.Players.LocalPlayer
@@ -40,6 +43,10 @@ function module.new(tool)
                 isAiming = false,
                 isReloading = false,
             },
+            connections = {
+                activeCameraSettingsChanged = nil,
+                inputBegan = nil,
+            },
         }
     }, module)
 
@@ -52,11 +59,11 @@ function module.new(tool)
         self:onToolUnequipped()
     end)
 
-    thirdPersonCamera.ActiveCameraSettingsChanged:Connect(function(...)
+    self.temp.connections.activeCameraSettingsChanged = thirdPersonCamera.ActiveCameraSettingsChanged:Connect(function(...)
         self:onActiveCameraSettingsChanged(...)
     end)
 
-    UserInputService.InputBegan:Connect(function(...)
+    self.temp.connections.inputBegan = UserInputService.InputBegan:Connect(function(...)
         self:onInputBegan(...)
     end)
 
@@ -93,6 +100,9 @@ function module:onToolUnequipped()
     self.animations.hold:Stop()
     self.animations.aim:Stop()
     self.animations.reload:Stop()
+
+    -- disconnect connections
+    disconnectConnections(self.temp.connections)
 end
 
 function module:onInputBegan(input, gameProcessed)
