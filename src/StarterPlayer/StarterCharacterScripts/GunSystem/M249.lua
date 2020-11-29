@@ -154,7 +154,7 @@ function module:reload()
 end
 
 function module:shoot()
-    self.remotes.Shoot:FireServer()
+    self.remotes.Shoot:FireServer(self.temp.mouse.Hit.Position)
 end
 
 function module:updateMouseIcon()
