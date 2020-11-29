@@ -18,70 +18,6 @@ local character = player.Character
 
 -- // FUNCTIONS \\ --
 
--- indirect
-
-function module:updateMouseIcon()
-	if self.temp.mouse and not self.tool.Parent:IsA("Backpack") then
-		self.temp.mouse.Icon = Settings.mouseIcon
-	end
-end
-
--- module direct
-
-function module:onActiveCameraSettingsChanged(newCameraSettings: String)
-    if newCameraSettings == "DefaultShoulder" then
-        -- Stops all animations but starts holding animation
-        self.animations.aim:Stop()
-        self.animations.hold:Play()
-    elseif newCameraSettings == "ZoomedShoulder" then
-        -- Stops all animations but starts aim animation
-        self.animations.aim:Play()
-    end
-end
-
--- service direct
-
-function module:onInputBegan(input, gameProcessed)
-    if gameProcessed then
-        return
-    end
-
-    if input.KeyCode == Settings.keybinds.reload then
-        self.animations.reload:Play()
-        self.animations.reload.Stopped:Wait()
-        self.animations.hold:Play()
-    end
-end
-
--- object direct
-
-function module:onToolEquipped(playerMouse)
-    -- start third person camera
-    thirdPersonCamera:Enable()
-    thirdPersonCamera:SetCharacterAlignment(true)
-
-    -- set mouse
-    self.temp.mouse = playerMouse
-    self:updateMouseIcon()
-
-
-    -- play hold animation
-    self.animations.hold:Play()
-end
-
-function module:onToolUnequipped()
-    -- stop third person camera
-    thirdPersonCamera:Disable()
-
-    -- stop all animations
-    self.animations.runningHold:Stop()
-    self.animations.hold:Stop()
-    self.animations.aim:Stop()
-    self.animations.reload:Stop()
-end
-
--- init
-
 function module.new(tool)
 
     -- create vars for metatable
@@ -99,10 +35,11 @@ function module.new(tool)
         },
         temp = {
             mouse = nil,
-            connections = {
-                activeCameraSettingsChanged = nil,
-                inputBegan = nil,
-            }
+            states = {
+                isEquipped = false,
+                isAiming = false,
+                isReloading = false,
+            },
         }
     }, module)
 
@@ -115,14 +52,90 @@ function module.new(tool)
         self:onToolUnequipped()
     end)
 
-    self.temp.connections.activeCameraSettingsChanged = thirdPersonCamera.ActiveCameraSettingsChanged:Connect(function(...)
+    thirdPersonCamera.ActiveCameraSettingsChanged:Connect(function(...)
         self:onActiveCameraSettingsChanged(...)
     end)
 
-    self.temp.connections.inputBegan = UserInputService.InputBegan:Connect(function(...)
+    UserInputService.InputBegan:Connect(function(...)
         self:onInputBegan(...)
     end)
 
+end
+
+-- direct
+
+function module:onToolEquipped(playerMouse)
+    self.temp.states.isEquipped = true
+
+    -- start third person camera
+    thirdPersonCamera:Enable()
+    thirdPersonCamera:SetCharacterAlignment(true)
+
+    -- set mouse
+    self.temp.mouse = playerMouse
+    self:updateMouseIcon()
+
+    -- play hold animation
+    self.animations.hold:Play()
+end
+
+function module:onToolUnequipped()
+    -- disable states
+    self.temp.states.isEquipped = false
+    self.temp.states.isReloading = false
+    self.temp.states.isAiming = false
+
+    -- stop third person camera
+    thirdPersonCamera:Disable()
+
+    -- stop all animations
+    self.animations.runningHold:Stop()
+    self.animations.hold:Stop()
+    self.animations.aim:Stop()
+    self.animations.reload:Stop()
+end
+
+function module:onInputBegan(input, gameProcessed)
+    if gameProcessed then
+        return
+    end
+
+    if input.KeyCode == Settings.keybinds.reload then
+        self:reload()
+    end
+end
+
+function module:onActiveCameraSettingsChanged(newCameraSettings: String)
+    self.temp.states.isAiming = newCameraSettings == "ZoomedShoulder"
+
+    if newCameraSettings == "DefaultShoulder" then
+        -- Stops all animations but starts holding animation
+        self.animations.aim:Stop()
+        self.animations.hold:Play()
+    elseif newCameraSettings == "ZoomedShoulder" then
+        -- Stops all animations but starts aim animation
+        self.animations.aim:Play()
+    end
+end
+
+-- indirect
+
+function module:reload()   
+    if self.temp.states.isAiming then
+        return
+    end
+
+    self.temp.states.isReloading = true
+    self.animations.reload:Play()
+    self.animations.reload.Stopped:Wait()
+    self.animations.hold:Play()
+    self.temp.states.isReloading = false
+end
+
+function module:updateMouseIcon()
+	if self.temp.mouse and not self.tool.Parent:IsA("Backpack") then
+		self.temp.mouse.Icon = Settings.mouseIcon
+	end
 end
 
 return module
