@@ -30,6 +30,7 @@ function module.new(tool)
     -- create metatable
     local self = setmetatable({
         tool = tool,
+        remotes = tool:WaitForChild("Remotes"),
         animations = {
             hold = animator:LoadAnimation(waitForPath(tool, "Animations.Hold")),
             runningHold = animator:LoadAnimation(waitForPath(tool, "Animations.RunningHold")),
@@ -59,14 +60,6 @@ function module.new(tool)
         self:onToolUnequipped()
     end)
 
-    self.temp.connections.activeCameraSettingsChanged = thirdPersonCamera.ActiveCameraSettingsChanged:Connect(function(...)
-        self:onActiveCameraSettingsChanged(...)
-    end)
-
-    self.temp.connections.inputBegan = UserInputService.InputBegan:Connect(function(...)
-        self:onInputBegan(...)
-    end)
-
 end
 
 -- direct
@@ -84,6 +77,18 @@ function module:onToolEquipped(playerMouse)
 
     -- play hold animation
     self.animations.hold:Play()
+
+    -- play sound
+    self.remotes.ChangeState:FireServer("EQUIP")
+
+    -- events
+    self.temp.connections.activeCameraSettingsChanged = thirdPersonCamera.ActiveCameraSettingsChanged:Connect(function(...)
+        self:onActiveCameraSettingsChanged(...)
+    end)
+
+    self.temp.connections.inputBegan = UserInputService.InputBegan:Connect(function(...)
+        self:onInputBegan(...)
+    end)
 end
 
 function module:onToolUnequipped()
@@ -91,6 +96,9 @@ function module:onToolUnequipped()
     self.temp.states.isEquipped = false
     self.temp.states.isReloading = false
     self.temp.states.isAiming = false
+
+    -- disconnect connections
+    disconnectConnections(self.temp.connections)
 
     -- stop third person camera
     thirdPersonCamera:Disable()
@@ -101,8 +109,8 @@ function module:onToolUnequipped()
     self.animations.aim:Stop()
     self.animations.reload:Stop()
 
-    -- disconnect connections
-    disconnectConnections(self.temp.connections)
+    -- play sound
+    self.remotes.ChangeState:FireServer("UNEQUIP")
 end
 
 function module:onInputBegan(input, gameProcessed)
@@ -112,6 +120,8 @@ function module:onInputBegan(input, gameProcessed)
 
     if input.KeyCode == Settings.keybinds.reload then
         self:reload()
+    elseif input.UserInputType == Enum.UserInputType.MouseButton1 then
+        self:shoot()
     end
 end
 
@@ -119,12 +129,12 @@ function module:onActiveCameraSettingsChanged(newCameraSettings: String)
     self.temp.states.isAiming = newCameraSettings == "ZoomedShoulder"
 
     if newCameraSettings == "DefaultShoulder" then
-        -- Stops all animations but starts holding animation
         self.animations.aim:Stop()
         self.animations.hold:Play()
+        self.remotes.ChangeState:FireServer("AIM_OUT")
     elseif newCameraSettings == "ZoomedShoulder" then
-        -- Stops all animations but starts aim animation
         self.animations.aim:Play()
+        self.remotes.ChangeState:FireServer("AIM_IN")
     end
 end
 
@@ -136,10 +146,15 @@ function module:reload()
     end
 
     self.temp.states.isReloading = true
+    self.remotes.ChangeState:FireServer("RELOAD")
     self.animations.reload:Play()
     self.animations.reload.Stopped:Wait()
     self.animations.hold:Play()
     self.temp.states.isReloading = false
+end
+
+function module:shoot()
+    self.remotes.Shoot:FireServer()
 end
 
 function module:updateMouseIcon()

@@ -5,6 +5,8 @@ local CollectionService = game:GetService("CollectionService")
 
 -- modules
 local Settings = require(game.ReplicatedStorage.GunSystem.Settings.Global)
+
+-- libraries
 local core = require(game.ReplicatedStorage.Modules.Core)
 local collection = core("collection")
 
