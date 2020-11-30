@@ -29,6 +29,7 @@ end
 
 game.Players.PlayerAdded:Connect(function(player)
     player.CharacterAdded:Connect(controller.createAnimator)
+    player.CharacterAppearanceLoaded:Connect(controller.overrideAnimations)
 end)
 
 collection(Settings.gunTag, init)
