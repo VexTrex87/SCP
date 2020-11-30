@@ -1,23 +1,25 @@
 return {
     mouseIcon = "rbxassetid://131581677",
-    damageTypes = {
-        head = {
-            partNames = {"Head"},
-            amount = 35
+    gun = {
+        fireRate = 800, -- rounds per minute
+        damageTypes = {
+            head = {
+                partNames = {"Head"},
+                amount = 40
+            },
+            torso = {
+                partNames = {"UpperTorso", "LowerTorso", "HumanoidRootPart"},
+                amount = 30,
+            },
+            limb = {
+                partNames = "ELSE",
+                amount = 20,
+            }
         },
-        torso = {
-            partNames = {"UpperTorso", "LowerTorso", "HumanoidRootPart"},
-            amount = 25,
-        },
-        limb = {
-            partNames = "ELSE",
-            amount = 15,
-        }
     },
-
     bullet = {
-        bulletSpeed = 500, -- studs/sec
-        bulletMaxDist = 500, -- studs
+        bulletSpeed = 2700, -- studs/sec
+        bulletMaxDist = 150, -- studs
         bulletGravity = Vector3.new(0, -workspace.Gravity, 0),
         bulletLengthMultiplier = 200,
         minBulletSpreadAngle = 0, -- between 0 and 180, in degrees

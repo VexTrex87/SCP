@@ -5,6 +5,7 @@ module.__index = module
 
 -- services
 local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
 
 -- modules
 local Settings = require(game.ReplicatedStorage.GunSystem.Settings.M249)
@@ -39,14 +40,18 @@ function module.new(tool)
         },
         temp = {
             mouse = nil,
+            timeOfRecentFire = os.clock(),
             states = {
                 isEquipped = false,
                 isAiming = false,
                 isReloading = false,
+                isMouseDown = false,
             },
             connections = {
                 activeCameraSettingsChanged = nil,
                 inputBegan = nil,
+                inputEnded = nil,
+                stepped = nil,
             },
         }
     }, module)
@@ -89,6 +94,14 @@ function module:onToolEquipped(playerMouse)
     self.temp.connections.inputBegan = UserInputService.InputBegan:Connect(function(...)
         self:onInputBegan(...)
     end)
+
+    self.temp.connections.inputEnded = UserInputService.InputEnded:Connect(function(...)
+        self:onInputEnded(...)
+    end)
+
+    self.temp.connections.stepped = RunService.Stepped:Connect(function()
+        self:onStepped()
+    end)
 end
 
 function module:onToolUnequipped()
@@ -121,8 +134,20 @@ function module:onInputBegan(input, gameProcessed)
     if input.KeyCode == Settings.keybinds.reload then
         self:reload()
     elseif input.UserInputType == Enum.UserInputType.MouseButton1 then
-        self:shoot()
+        self.temp.states.isMouseDown = true
     end
+end
+
+function module:onInputEnded(input, gameProcessed)
+    if gameProcessed or input.UserInputType == Enum.UserInputType.MouseButton1 then
+        self.temp.states.isMouseDown = false
+    end
+end
+
+function module:onStepped()
+    if self.temp.states.isMouseDown and os.clock() - self.temp.timeOfRecentFire >= 60 / Settings.gun.fireRate then
+		self:shoot()
+	end
 end
 
 function module:onActiveCameraSettingsChanged(newCameraSettings: String)
@@ -154,6 +179,7 @@ function module:reload()
 end
 
 function module:shoot()
+    self.temp.timeOfRecentFire = os.clock()
     self.remotes.Shoot:FireServer(self.temp.mouse.Hit.Position)
 end
 

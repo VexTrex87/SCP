@@ -54,6 +54,7 @@ function module.new(tool)
 			castBehavior = nil,
 		},
         temp = {
+            timeOfRecentFire = os.clock(),
             canFire = true,
         }
     }, module)
@@ -134,7 +135,7 @@ function module:onRayHit(cast, raycastResult, segmentVelocity, cosmeticBulletObj
     end
 
     -- deal damage depending on where it was hit
-    for _, damageInfo in pairs(Settings.damageTypes) do
+    for _, damageInfo in pairs(Settings.gun.damageTypes) do
         if typeof(damageInfo.partNames) == "table" then
             if table.find(damageInfo.partNames, hitPart.Name) then
                 humanoid:TakeDamage(damageInfo.amount)
@@ -198,6 +199,12 @@ function module:shoot(player, mousePoint)
     if player ~= self.owner then
         player:Kick("Attempted to fire " .. self.owner.Name .. "'s remote.")
     end
+
+    -- firerate debounce
+    if self.temp.isMouseDown and os.clock() - self.temp.timeOfRecentFire < 60 / Settings.fireRate then
+		return
+    end
+    self.temp.timeOfRecentFire = os.clock()
 
 	-- check if gun is equipped
 	if self.tool.Parent:IsA("Backpack") then 
