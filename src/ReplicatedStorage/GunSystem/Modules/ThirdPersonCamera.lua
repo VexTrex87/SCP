@@ -362,11 +362,13 @@ USER_INPUT_SERVICE.InputBegan:Connect(function(inputObject, gameProcessedEvent)
 			end
 		end
 		
+		--[[
 		if inputObject.KeyCode == Enum.KeyCode.LeftControl then
 			if singleton.IsEnabled == true then
 				singleton:SetMouseStep(not singleton.IsMouseSteppedIn)
 			end
 		end
+		]]
 	end
 end)
 
