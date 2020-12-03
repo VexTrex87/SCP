@@ -10,7 +10,7 @@ local Debris = game:GetService("Debris")
 
 -- modules
 local Settings = require(game.ReplicatedStorage.GunSystem.Settings.M249)
-local thirdPersonCamera = require(game.ReplicatedStorage.GunSystem.Modules.ThirdPersonCamera)
+local thirdPersonCamera = require(game.ReplicatedStorage.Modules.ThirdPersonCamera)
 
 -- libraries
 local core = require(game.ReplicatedStorage.Modules.Core)
