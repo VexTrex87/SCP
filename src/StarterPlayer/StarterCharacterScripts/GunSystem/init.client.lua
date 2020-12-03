@@ -28,6 +28,7 @@ function init(tool)
         local module = script:WaitForChild(tag, 1)
         if module then
             require(module).new(tool)
+            break
         end
     end
 end
