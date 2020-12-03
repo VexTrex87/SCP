@@ -110,11 +110,12 @@ end
 -- fast cast events
 
 function module:onRayHit(cast, raycastResult, segmentVelocity, cosmeticBulletObject, sender)
+    local damageType, damageAmount
     local hitPart = raycastResult.Instance
     local hitPoint = raycastResult.Position
     local normal = raycastResult.Normal
     
-        -- check if ray hit a part
+    -- check if ray hit a part
     if not hitPart then
         return
     end
@@ -135,15 +136,21 @@ function module:onRayHit(cast, raycastResult, segmentVelocity, cosmeticBulletObj
     end
 
     -- deal damage depending on where it was hit
-    for _, damageInfo in pairs(Settings.gun.damageTypes) do
+    for damageInfoIndex, damageInfo in pairs(Settings.gun.damageTypes) do
         if typeof(damageInfo.partNames) == "table" then
             if table.find(damageInfo.partNames, hitPart.Name) then
-                humanoid:TakeDamage(damageInfo.amount)
+                damageType = damageInfoIndex
+                damageAmount = damageInfo.amount
             end
         else
-            humanoid:TakeDamage(damageInfo.amount)
+            damageType = damageInfoIndex
+            damageAmount = damageInfo.amount
         end
     end
+    humanoid:TakeDamage(damageAmount)
+
+    -- damage indicator
+    self.remotes.DamageIndicator:FireClient(sender, character, damageType, damageAmount)
 end
 
 function module:onRayUpdated(cast, segmentOrigin, segmentDirection, length, segmentVelocity, cosmeticBulletObject)

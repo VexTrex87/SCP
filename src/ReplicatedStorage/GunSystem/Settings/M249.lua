@@ -33,6 +33,33 @@ return {
         },
     },
 
+	UI = {
+		damageIndicator = {
+			head = {
+				TextColor3 = Color3.fromRGB(255, 255, 150),
+				TextStrokeColor3 = Color3.fromRGB(55, 45, 0),
+				TextStrokeTransparency = 0.7,
+				TextTransparency = 1
+			},
+			torso = {
+				TextColor3 = Color3.fromRGB(255, 255, 255),
+				TextStrokeColor3 = Color3.fromRGB(0, 0, 0),
+				TextStrokeTransparency = 0.7,
+				TextTransparency = 1
+			},
+			limb = {
+				TextColor3 = Color3.fromRGB(255, 255, 255),
+				TextStrokeColor3 = Color3.fromRGB(0, 0, 0),
+				TextStrokeTransparency = 0.7,
+				TextTransparency = 1
+			},
+			maxduration = 2,
+			tweenInfo = TweenInfo.new(0.5),
+			minOffset = Vector3.new(-6, -6, 0),
+			maxOffset = Vector3.new(6, 6, 0)
+		},
+	},
+
     effects = {
         muzzleFlashTime = 0.1,
         impactParticleDuration = 0.05,

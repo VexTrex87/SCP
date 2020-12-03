@@ -6,6 +6,7 @@ module.__index = module
 -- services
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
+local Debris = game:GetService("Debris")
 
 -- modules
 local Settings = require(game.ReplicatedStorage.GunSystem.Settings.M249)
@@ -15,6 +16,9 @@ local thirdPersonCamera = require(game.ReplicatedStorage.GunSystem.Modules.Third
 local core = require(game.ReplicatedStorage.Modules.Core)
 local waitForPath = core("waitForPath")
 local disconnectConnections = core("disconnectConnections")
+local playSound = core("playSound")
+local randomnum = core("randomnum")
+local newTween = core("newTween")
 
 -- objects
 local player = game.Players.LocalPlayer
@@ -38,6 +42,10 @@ function module.new(tool)
             aim = animator:LoadAnimation(waitForPath(tool, "Animations.Aim")),
             reload = animator:LoadAnimation(waitForPath(tool, "Animations.Reload")),
         },
+        sounds = {
+            headHit = tool.Sounds.HeadHit,
+            hit = tool.Sounds.Hit,
+        },
         temp = {
             mouse = nil,
             timeOfRecentFire = os.clock(),
@@ -52,6 +60,7 @@ function module.new(tool)
                 inputBegan = nil,
                 inputEnded = nil,
                 stepped = nil,
+                damageIndicatorFired = nil,
             },
         }
     }, module)
@@ -101,6 +110,10 @@ function module:onToolEquipped(playerMouse)
 
     self.temp.connections.stepped = RunService.Stepped:Connect(function()
         self:onStepped()
+    end)
+
+    self.temp.connections.damageIndicatorFired = self.remotes.DamageIndicator.OnClientEvent:Connect(function(...)
+        self:indicateDamage(...)
     end)
 end
 
@@ -161,6 +174,46 @@ function module:onActiveCameraSettingsChanged(newCameraSettings: String)
         self.animations.aim:Play()
         self.remotes.ChangeState:FireServer("AIM_IN")
     end
+end
+
+function module:indicateDamage(targetCharacter, damageType, damageAmount)
+    print(targetCharacter.Name, damageType, damageAmount)
+
+    -- find humanoid root part
+    local root = targetCharacter:FindFirstChild("HumanoidRootPart")
+    if not root then
+        return
+    end
+
+    -- create new indicator
+    local newIndicator = self.tool.UI.DamageIndicator:Clone()
+    newIndicator.TextLabel.Text = damageAmount
+
+    -- set properties for GUI
+    for propertyName, propertyValue in pairs(Settings.UI.damageIndicator[damageType]) do
+        newIndicator.TextLabel[propertyName] = propertyValue
+    end
+
+    newIndicator.Enabled = true
+    newIndicator.Parent = root 
+    Debris:AddItem(newIndicator, Settings.UI.damageIndicator.maxduration)
+
+    if damageType == "head" then
+        playSound(self.sounds.headHit, self.tool.Handle)
+    else
+        playSound(self.sounds.hit, self.tool.Handle)
+    end
+
+    -- set position of GUI
+    local minOffset = Settings.UI.damageIndicator.minOffset
+    local maxOffset = Settings.UI.damageIndicator.minOffset
+    newIndicator.StudsOffset = Vector3.new(
+        randomnum(minOffset.X, maxOffset.X, 10),
+        randomnum(minOffset.Y, maxOffset.Y, 10), 
+        0
+    )   
+    newTween(newIndicator.TextLabel, Settings.UI.damageIndicator.tweenInfo, {TextTransparency = 0}).Completed:Wait()
+    newTween(newIndicator.TextLabel, Settings.UI.damageIndicator.tweenInfo, {TextTransparency = 1})
 end
 
 -- indirect

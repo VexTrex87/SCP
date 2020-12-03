@@ -16,14 +16,18 @@ local player = game.Players.LocalPlayer
 -- // FUNCTIONS \\ --
 
 function init(tool)
+    -- check if tool is in a player's backpack
     local backpack = player:WaitForChild("Backpack")
-    if tool:IsDescendantOf(backpack) then
-        local tags = CollectionService:GetTags(tool)
-        for _,tag in pairs(tags) do
-            local module = script:WaitForChild(tag, 1)
-            if module then
-                require(module).new(tool)
-            end
+    if not tool:IsDescendantOf(backpack) then
+        return
+    end
+
+    -- find module
+    local tags = CollectionService:GetTags(tool)
+    for _,tag in pairs(tags) do
+        local module = script:WaitForChild(tag, 1)
+        if module then
+            require(module).new(tool)
         end
     end
 end
