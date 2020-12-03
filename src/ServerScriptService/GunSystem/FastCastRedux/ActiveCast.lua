@@ -33,9 +33,6 @@ local FastCast = nil -- Static reference to the FastCast static module.
 -- Format params: methodName, ctorName
 local ERR_NOT_INSTANCE = "Cannot statically invoke method '%s' - It is an instance method. Call it on an instance of this class created via %s"
 
--- Format params: paramName, expectedType, actualType
-local ERR_INVALID_TYPE = "Invalid type for parameter '%s' (Expected %s, got %s)"
-
 -- The name of the folder containing the 3D GUI elements for visualizing casts.
 local FC_VIS_OBJ_NAME = "FastCastVisualizationObjects"
 
@@ -174,7 +171,6 @@ local function SimulateCast(cast: ActiveCast, delta: number)
 	local acceleration = latestTrajectory.Acceleration
 	
 	local lastPoint = GetPositionAtTime(totalDelta, origin, initialVelocity, acceleration)
-	local lastVelocity = GetVelocityAtTime(totalDelta, initialVelocity, acceleration)
 	
 	cast.StateInfo.TotalRuntime += delta
 	
@@ -214,7 +210,6 @@ local function SimulateCast(cast: ActiveCast, delta: number)
 	end
 	
 	if part and part ~= cast.RayInfo.CosmeticBulletObject then
-		local start = tick()
 		PrintDebug("Hit something, testing now.")
 		
 		-- SANITY CHECK: Don't allow the user to yield or run otherwise extensive code that takes longer than one frame/heartbeat to execute.

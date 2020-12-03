@@ -1,30 +1,26 @@
+local BAD_ARG_ERROR="%s is not a valid %s"
+
 return function(target, path, maxWait)
 
-	local BAD_ARG_ERROR="%s is not a valid %s"
-
-	do --error checking
-		local tt=typeof(target)
-		local tp=typeof(path)
-		local tm=typeof(maxWait)
-		if tt~="Instance" then error(BAD_ARG_ERROR:format("Argument 1","Instance")) end
-		if tp~="string" then error(BAD_ARG_ERROR:format("Argument 2","string")) end
-		if tm~="nil" and tm~="number" then error(BAD_ARG_ERROR:format("Argument 3","number")) end
+	-- error checking
+	assert(typeof(target) == "Instance", BAD_ARG_ERROR:format("Argument 1", "Instance"))
+	assert(typeof(path) == "string", BAD_ARG_ERROR:format("Argument 2", "string"))
+	if maxWait then
+		assert(typeof(maxWait) == "number", BAD_ARG_ERROR:format("Argument 3", "number"))
 	end
-	local segments=string.split(path,".")
-	local latest
-	local start=tick()
-	for index,segment in pairs(segments) do
-		if maxWait then
-			latest=target:WaitForChild(segment,(start+maxWait)-tick())
+
+	-- yield for child
+	local children = string.split(path,".")
+	local currentChild
+	local yieldDuration = tick()
+	for _, segment in pairs(children) do
+		currentChild = maxWait and target:WaitForChild(segment, yieldDuration + maxWait - tick()) or target:WaitForChild(segment)
+		if currentChild then
+			target = currentChild
 		else
-			latest=target:WaitForChild(segment)
-		end
-		if latest then
-			target=latest
-		else
-			return nil
+			return
 		end
 	end
-	return latest
 
+	return currentChild
 end

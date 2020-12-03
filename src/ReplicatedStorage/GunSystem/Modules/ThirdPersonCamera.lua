@@ -1,22 +1,18 @@
 local CLASS = {}
 
---// SERVICES //--
+--// VARIABLES \\ --
 
-local PLAYERS_SERVICE = game:GetService("Players")
-local RUN_SERVICE = game:GetService("RunService")
-local USER_INPUT_SERVICE = game:GetService("UserInputService")
-
---// CONSTANTS //--
-
-local LOCAL_PLAYER = PLAYERS_SERVICE.LocalPlayer
-
+-- constants
 local UPDATE_UNIQUE_KEY = "OTS_CAMERA_SYSTEM_UPDATE"
 
---// VARIABLES //--
+-- services
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
 
+-- objects
+local player = game.Players.LocalPlayer
 
-
---// CONSTRUCTOR //--
+-- // FUNCTIONS \\ --
 
 function CLASS.new()
 	
@@ -151,9 +147,9 @@ function CLASS:SetMouseStep(steppedIn)
 	self.IsMouseSteppedIn = steppedIn
 	self.MouseStepChangedEvent:Fire(steppedIn)
 	if steppedIn == true then
-		USER_INPUT_SERVICE.MouseBehavior = Enum.MouseBehavior.LockCenter
+		UserInputService.MouseBehavior = Enum.MouseBehavior.LockCenter
 	else
-		USER_INPUT_SERVICE.MouseBehavior = Enum.MouseBehavior.Default
+		UserInputService.MouseBehavior = Enum.MouseBehavior.Default
 	end
 end
 
@@ -196,21 +192,21 @@ function CLASS:Update()
 	
 	--// Address mouse behavior and camera type //--
 	if self.IsMouseSteppedIn == true then
-		USER_INPUT_SERVICE.MouseBehavior = Enum.MouseBehavior.LockCenter
+		UserInputService.MouseBehavior = Enum.MouseBehavior.LockCenter
 	else
-		USER_INPUT_SERVICE.MouseBehavior = Enum.MouseBehavior.Default
+		UserInputService.MouseBehavior = Enum.MouseBehavior.Default
 	end
 	currentCamera.CameraType = Enum.CameraType.Scriptable
 	---
 	
 	--// Address mouse input //--
-	local mouseDelta = USER_INPUT_SERVICE:GetMouseDelta() * activeCameraSettings.Sensitivity
+	local mouseDelta = UserInputService:GetMouseDelta() * activeCameraSettings.Sensitivity
 	self.HorizontalAngle -= mouseDelta.X/currentCamera.ViewportSize.X
 	self.VerticalAngle -= mouseDelta.Y/currentCamera.ViewportSize.Y
 	self.VerticalAngle = math.rad(math.clamp(math.deg(self.VerticalAngle), self.VerticalAngleLimits.Min, self.VerticalAngleLimits.Max))
 	----
 	
-	local character = LOCAL_PLAYER.Character or LOCAL_PLAYER.CharacterAdded:Wait()
+	local character = player.Character or player.CharacterAdded:Wait()
 	local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 	if humanoidRootPart ~= nil then
 		
@@ -286,7 +282,7 @@ end
 
 function CLASS:ConfigureStateForEnabled()
 	self:SaveCameraSettings()
-	self.SavedMouseBehavior = USER_INPUT_SERVICE.MouseBehavior
+	self.SavedMouseBehavior = UserInputService.MouseBehavior
 	self:SetActiveCameraSettings("DefaultShoulder")
 	self:SetCharacterAlignment(false)
 	self:SetMouseStep(true)
@@ -305,7 +301,7 @@ end
 
 function CLASS:ConfigureStateForDisabled()
 	self:LoadCameraSettings()
-	USER_INPUT_SERVICE.MouseBehavior = self.SavedMouseBehavior
+	UserInputService.MouseBehavior = self.SavedMouseBehavior
 	self:SetActiveCameraSettings("DefaultShoulder")
 	self:SetCharacterAlignment(false)
 	self:SetMouseStep(false)
@@ -321,7 +317,7 @@ function CLASS:Enable()
 	self.EnabledEvent:Fire()
 	self:ConfigureStateForEnabled()
 	
-	RUN_SERVICE:BindToRenderStep(
+	RunService:BindToRenderStep(
 		UPDATE_UNIQUE_KEY,
 		Enum.RenderPriority.Camera.Value - 10,
 		function()
@@ -339,7 +335,7 @@ function CLASS:Disable()
 	self.IsEnabled = false
 	self.DisabledEvent:Fire()
 	
-	RUN_SERVICE:UnbindFromRenderStep(UPDATE_UNIQUE_KEY)
+	RunService:UnbindFromRenderStep(UPDATE_UNIQUE_KEY)
 end
 ----
 
@@ -349,7 +345,7 @@ CLASS.__index = CLASS
 
 local singleton = CLASS.new()
 
-USER_INPUT_SERVICE.InputBegan:Connect(function(inputObject, gameProcessedEvent)
+UserInputService.InputBegan:Connect(function(inputObject, gameProcessedEvent)
 	if gameProcessedEvent == false and singleton.IsEnabled == true then
 		if inputObject.KeyCode == Enum.KeyCode.Q then
 			singleton:SetShoulderDirection(-1)
@@ -357,25 +353,17 @@ USER_INPUT_SERVICE.InputBegan:Connect(function(inputObject, gameProcessedEvent)
 			singleton:SetShoulderDirection(1)
 		end
 		if inputObject.UserInputType == Enum.UserInputType.MouseButton2 then
-			if LOCAL_PLAYER.Character:FindFirstChildWhichIsA("Tool") then
+			if player.Character:FindFirstChildWhichIsA("Tool") then
 				singleton:SetActiveCameraSettings("ZoomedShoulder")
 			end
 		end
-		
-		--[[
-		if inputObject.KeyCode == Enum.KeyCode.LeftControl then
-			if singleton.IsEnabled == true then
-				singleton:SetMouseStep(not singleton.IsMouseSteppedIn)
-			end
-		end
-		]]
 	end
 end)
 
-USER_INPUT_SERVICE.InputEnded:Connect(function(inputObject, gameProcessedEvent)
+UserInputService.InputEnded:Connect(function(inputObject, gameProcessedEvent)
 	if gameProcessedEvent == false and singleton.IsEnabled == true then
 		if inputObject.UserInputType == Enum.UserInputType.MouseButton2 then
-			if LOCAL_PLAYER.Character:FindFirstChildWhichIsA("Tool") then
+			if player.Character:FindFirstChildWhichIsA("Tool") then
 				singleton:SetActiveCameraSettings("DefaultShoulder")
 			end
 		end

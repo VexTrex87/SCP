@@ -43,7 +43,6 @@ function module.new(tool)
             reload = animator:LoadAnimation(waitForPath(tool, "Animations.Reload")),
         },
         sounds = {
-            headHit = tool.Sounds.HeadHit,
             hit = tool.Sounds.Hit,
         },
         temp = {
@@ -177,8 +176,6 @@ function module:onActiveCameraSettingsChanged(newCameraSettings: String)
 end
 
 function module:indicateDamage(targetCharacter, damageType, damageAmount)
-    print(targetCharacter.Name, damageType, damageAmount)
-
     -- find humanoid root part
     local root = targetCharacter:FindFirstChild("HumanoidRootPart")
     if not root then
@@ -197,12 +194,7 @@ function module:indicateDamage(targetCharacter, damageType, damageAmount)
     newIndicator.Enabled = true
     newIndicator.Parent = root 
     Debris:AddItem(newIndicator, Settings.UI.damageIndicator.maxduration)
-
-    if damageType == "head" then
-        playSound(self.sounds.headHit, self.tool.Handle)
-    else
-        playSound(self.sounds.hit, self.tool.Handle)
-    end
+    playSound(self.sounds.hit, self.tool.Handle)
 
     -- set position of GUI
     local minOffset = Settings.UI.damageIndicator.minOffset

@@ -2,7 +2,7 @@ return function(Table, Value, RemoveCount)
 	local Count = 0
 
 	if typeof(RemoveCount) == "number" then
-		for x = RemoveCount, 1, -1 do
+		for _ = RemoveCount, 1, -1 do
 			if table.find(Table, Value) then
 				Count = Count + 1
 				table.remove(Table, table.find(Table, Value))	
