@@ -9,7 +9,7 @@ local RunService = game:GetService("RunService")
 local Debris = game:GetService("Debris")
 
 -- modules
-local Settings = require(game.ReplicatedStorage.GunSystem.Settings.M249)
+local Settings = require(game.ReplicatedStorage.GunSystem.Settings[script.Name])
 local thirdPersonCamera = require(game.ReplicatedStorage.Modules.ThirdPersonCamera)
 
 -- libraries
@@ -171,7 +171,6 @@ function module:onActiveCameraSettingsChanged(newCameraSettings: String)
         self.remotes.ChangeState:FireServer("AIM_OUT")
     elseif newCameraSettings == "ZoomedShoulder" then
         self.animations.aim:Play()
-        print(self.animations.aim.IsPlaying)
         self.remotes.ChangeState:FireServer("AIM_IN")
     end
 end

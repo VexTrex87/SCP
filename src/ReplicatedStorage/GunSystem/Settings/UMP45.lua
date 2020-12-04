@@ -1,26 +1,26 @@
 return {
     mouseIcon = "rbxassetid://131581677",
     gun = {
-        fireRate = 900, -- rounds per minute
+        fireRate = 600, -- rounds per minute
         damageTypes = {
             head = {
                 partNames = {"Head"},
-                amount = 35
+                amount = 38
             },
             torso = {
                 partNames = {"UpperTorso", "LowerTorso", "HumanoidRootPart"},
-                amount = 28,
+                amount = 30,
             },
             limb = {
                 partNames = "ELSE",
-                amount = 22,
+                amount = 21,
             }
         },
-        fireMode = {"AUTO"}
+        fireMode = {"AUTO", "SEMI"}
     },
     bullet = {
-        bulletSpeed = 2800, -- studs/sec
-        bulletMaxDist = 165, -- studs
+        bulletSpeed = 1500, -- studs/sec
+        bulletMaxDist = 100, -- studs
         bulletGravity = Vector3.new(0, -workspace.Gravity, 0),
         bulletLengthMultiplier = 200,
         minBulletSpreadAngle = 0, -- between 0 and 180, in degrees
@@ -58,8 +58,7 @@ return {
 			tweenInfo = TweenInfo.new(0.5),
 			minOffset = Vector3.new(-6, -6, 0),
 			maxOffset = Vector3.new(6, 6, 0)
-        },
-        fireMode = {"AUTO"}
+		},
 	},
 
     effects = {
@@ -77,5 +76,6 @@ return {
     
     keybinds = {
         reload = Enum.KeyCode.R,
+        changeFireMode = Enum.KeyCode.V,
     },
 }

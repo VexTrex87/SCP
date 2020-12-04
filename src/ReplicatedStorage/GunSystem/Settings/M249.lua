@@ -16,6 +16,7 @@ return {
                 amount = 20,
             }
         },
+        fireMode = {"AUTO"}
     },
     bullet = {
         bulletSpeed = 2700, -- studs/sec
