@@ -9,7 +9,7 @@ local RunService = game:GetService("RunService")
 local Debris = game:GetService("Debris")
 
 -- modules
-local Settings = require(game.ReplicatedStorage.GunSystem.Settings.M249)
+local Settings = require(game.ReplicatedStorage.GunSystem.Settings[script.Name])
 local thirdPersonCamera = require(game.ReplicatedStorage.Modules.ThirdPersonCamera)
 
 -- libraries
