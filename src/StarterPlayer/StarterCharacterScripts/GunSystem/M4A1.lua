@@ -235,7 +235,7 @@ function module:changeFireMode()
 end
 
 function module:reload()   
-    if self.temp.states.isAiming then
+    if self.temp.states.isAiming or self.temp.states.isReloading or self.temp.states.isMouseDown then
         return
     end
 
@@ -248,6 +248,10 @@ function module:reload()
 end
 
 function module:shoot()
+    if self.temp.states.isReloading then
+        return
+    end
+
     if os.clock() - self.temp.timeOfRecentFire >= 60 / Settings.gun.fireRate then
         self.temp.timeOfRecentFire = os.clock()
         self.remotes.Shoot:FireServer(self.temp.mouse.Hit.Position)
