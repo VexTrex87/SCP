@@ -42,6 +42,9 @@ function module.new(tool)
             aim = animator:LoadAnimation(waitForPath(tool, "Animations.Aim")),
             reload = animator:LoadAnimation(waitForPath(tool, "Animations.Reload")),
         },
+        values = {
+            fireMode = waitForPath(tool, "Values.FireMode")
+        },
         sounds = {
             hit = tool.Sounds.Hit,
         },
@@ -73,6 +76,9 @@ function module.new(tool)
         self:onToolUnequipped()
     end)
 
+    self.remotes.DamageIndicator.OnClientEvent:Connect(function(...)
+        self:indicateDamage(...)
+    end)
 end
 
 -- direct
@@ -94,26 +100,8 @@ function module:onToolEquipped(playerMouse)
     -- play sound
     self.remotes.ChangeState:FireServer("EQUIP")
 
-    -- events
-    self.temp.connections.activeCameraSettingsChanged = thirdPersonCamera.ActiveCameraSettingsChanged:Connect(function(...)
-        self:onActiveCameraSettingsChanged(...)
-    end)
-
-    self.temp.connections.inputBegan = UserInputService.InputBegan:Connect(function(...)
-        self:onInputBegan(...)
-    end)
-
-    self.temp.connections.inputEnded = UserInputService.InputEnded:Connect(function(...)
-        self:onInputEnded(...)
-    end)
-
-    self.temp.connections.stepped = RunService.Stepped:Connect(function()
-        self:onStepped()
-    end)
-
-    self.temp.connections.damageIndicatorFired = self.remotes.DamageIndicator.OnClientEvent:Connect(function(...)
-        self:indicateDamage(...)
-    end)
+    -- init events
+    self:initEvents()
 end
 
 function module:onToolUnequipped()
@@ -145,8 +133,14 @@ function module:onInputBegan(input, gameProcessed)
 
     if input.KeyCode == Settings.keybinds.reload then
         self:reload()
+    elseif input.KeyCode == Settings.keybinds.changeFireMode then
+        self:changeFireMode()
     elseif input.UserInputType == Enum.UserInputType.MouseButton1 then
-        self.temp.states.isMouseDown = true
+		if self.values.fireMode.Value == "AUTO" then
+            self.temp.states.isMouseDown = true 
+		elseif self.values.fireMode.Value == "SEMI" then
+			self:shoot()
+		end	
     end
 end
 
@@ -157,7 +151,7 @@ function module:onInputEnded(input, gameProcessed)
 end
 
 function module:onStepped()
-    if self.temp.states.isMouseDown and os.clock() - self.temp.timeOfRecentFire >= 60 / Settings.gun.fireRate then
+    if self.temp.states.isMouseDown then
 		self:shoot()
 	end
 end
@@ -210,6 +204,36 @@ end
 
 -- indirect
 
+function module:initEvents()
+    disconnectConnections(self.temp.connections)
+
+    self.temp.connections.activeCameraSettingsChanged = thirdPersonCamera.ActiveCameraSettingsChanged:Connect(function(...)
+        self:onActiveCameraSettingsChanged(...)
+    end)
+
+    self.temp.connections.inputBegan = UserInputService.InputBegan:Connect(function(...)
+        self:onInputBegan(...)
+    end)
+
+    if self.values.fireMode.Value == "AUTO" then	
+        self.temp.connections.inputEnded = UserInputService.InputEnded:Connect(function(...)
+            self:onInputEnded(...)
+        end)
+    
+        self.temp.connections.stepped = RunService.Stepped:Connect(function()
+            self:onStepped()
+        end)
+    end
+end
+
+function module:changeFireMode()
+    local oldFireMode = self.values.fireMode.Value
+    local newFireMode = self.remotes.ChangeFireMode:InvokeServer()
+    if newFireMode and newFireMode ~= oldFireMode then
+        self:initEvents()
+    end
+end
+
 function module:reload()   
     if self.temp.states.isAiming then
         return
@@ -224,8 +248,10 @@ function module:reload()
 end
 
 function module:shoot()
-    self.temp.timeOfRecentFire = os.clock()
-    self.remotes.Shoot:FireServer(self.temp.mouse.Hit.Position)
+    if os.clock() - self.temp.timeOfRecentFire >= 60 / Settings.gun.fireRate then
+        self.temp.timeOfRecentFire = os.clock()
+        self.remotes.Shoot:FireServer(self.temp.mouse.Hit.Position)
+    end
 end
 
 function module:updateMouseIcon()

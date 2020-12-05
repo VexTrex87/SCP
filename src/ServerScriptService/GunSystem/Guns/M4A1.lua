@@ -35,6 +35,9 @@ function module.new(tool)
         handle = tool.Handle,
         remotes = tool.Remotes,
         owner = tool.Parent.Parent,
+        values = {
+            fireMode = tool.Values.FireMode,
+        },
         sounds = {
             equip = tool.Sounds.Equip,
             unequip = tool.Sounds.Unequip,
@@ -104,6 +107,10 @@ function module.new(tool)
     self.remotes.Shoot.OnServerEvent:Connect(function(...)
         self:shoot(...)
     end)
+
+	self.remotes.ChangeFireMode.OnServerInvoke = function(...)
+		return self:onChangeFireMode(...)
+	end
 
 end
 
@@ -227,6 +234,23 @@ function module:shoot(player, mousePoint)
 
 	-- end debounce
 	self.temp.canFire = true
+end
+
+function module:onChangeFireMode()
+	local fireModes = Settings.gun.fireMode
+	local oldFireModeIndex = table.find(fireModes, self.values.fireMode.Value)
+	local newFireMode
+
+	if oldFireModeIndex == #fireModes and oldFireModeIndex ~= 1 then
+		newFireMode = fireModes[1]
+	elseif oldFireModeIndex < #fireModes then
+		newFireMode = fireModes[oldFireModeIndex + 1]
+    end
+    
+	if newFireMode then
+		self.values.fireMode.Value = newFireMode
+		return newFireMode
+	end
 end
 
 -- indirect
