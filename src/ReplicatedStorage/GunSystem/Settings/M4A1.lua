@@ -77,5 +77,6 @@ return {
     
     keybinds = {
         reload = Enum.KeyCode.R,
+        changeFireMode = Enum.KeyCode.V,
     },
 }
