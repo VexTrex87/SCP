@@ -65,8 +65,8 @@ return {
     effects = {
         muzzleFlashTime = 0.1,
         impactParticleDuration = 0.05,
-        smokeDuration = 2,
-        smokeDespawnDelay = 3.5,
+        smokeDuration = 0.5,
+        smokeDespawnDelay = 1.5,
     },
 
     raycastParas = {
