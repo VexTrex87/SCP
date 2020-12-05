@@ -23,19 +23,20 @@ local newTween = core("newTween")
 -- objects
 local player = game.Players.LocalPlayer
 local character = player.Character
+local humanoid = character:WaitForChild("Humanoid")
 
 -- // FUNCTIONS \\ --
 
 function module.new(tool)
 
     -- create vars for metatable
-    local humanoid = character:WaitForChild("Humanoid")
     local animator = humanoid:WaitForChild("Animator")
 
     -- create metatable
     local self = setmetatable({
         tool = tool,
         remotes = tool:WaitForChild("Remotes"),
+        stateChangedEvent = waitForPath(script.Parent.Parent, "MovementAnimation.StateChanged"),
         animations = {
             hold = animator:LoadAnimation(waitForPath(tool, "Animations.Hold")),
             runningHold = animator:LoadAnimation(waitForPath(tool, "Animations.RunningHold")),
@@ -56,6 +57,7 @@ function module.new(tool)
                 isAiming = false,
                 isReloading = false,
                 isMouseDown = false,
+                currentAnimationState = "WALK"
             },
             connections = {
                 activeCameraSettingsChanged = nil,
@@ -63,6 +65,7 @@ function module.new(tool)
                 inputEnded = nil,
                 stepped = nil,
                 damageIndicatorFired = nil,
+                stateChanged = nil
             },
         }
     }, module)
@@ -79,6 +82,7 @@ function module.new(tool)
     self.remotes.DamageIndicator.OnClientEvent:Connect(function(...)
         self:indicateDamage(...)
     end)
+
 end
 
 -- direct
@@ -202,10 +206,25 @@ function module:indicateDamage(targetCharacter, damageType, damageAmount)
     newTween(newIndicator.TextLabel, Settings.UI.damageIndicator.tweenInfo, {TextTransparency = 1})
 end
 
+function module:stateChanged(newState)
+    self.temp.states.currentAnimationState = newState
+    if newState == "SPRINT" then
+        self.animations.hold:Stop()
+        self.animations.runningHold:Play()
+    elseif newState == "WALK" then
+        self.animations.runningHold:Stop()
+        self.animations.hold:Play()
+    end
+end
+
 -- indirect
 
 function module:initEvents()
     disconnectConnections(self.temp.connections)
+
+    self.temp.connections.stateChanged = self.stateChangedEvent.Event:Connect(function(...)
+        self:stateChanged(...)
+    end)
 
     self.temp.connections.activeCameraSettingsChanged = thirdPersonCamera.ActiveCameraSettingsChanged:Connect(function(...)
         self:onActiveCameraSettingsChanged(...)
@@ -235,7 +254,7 @@ function module:changeFireMode()
 end
 
 function module:reload()   
-    if self.temp.states.isAiming or self.temp.states.isReloading or self.temp.states.isMouseDown then
+    if self.temp.states.isAiming or self.temp.states.isReloading or self.temp.states.currentAnimationState ~= "WALK" or self.temp.states.isMouseDown then
         return
     end
 

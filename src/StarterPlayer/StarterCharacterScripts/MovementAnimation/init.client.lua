@@ -12,6 +12,7 @@ local disconnectConnections = core("disconnectConnections")
 local Settings = require(script:WaitForChild("Settings"))
 
 -- objects
+local stateChanged = script:WaitForChild("StateChanged")
 local camera = workspace.CurrentCamera
 local character = script.Parent
 local humanoid = character:WaitForChild("Humanoid")
@@ -33,13 +34,16 @@ onInputBeganCon = UserInputService.InputBegan:Connect(function(input, gameProces
 	if input.KeyCode == Settings.sprintKey then
 		humanoid.WalkSpeed = Settings.sprintSpeed
         newTween(camera, Settings.povTweenInfo, {FieldOfView = Settings.sprintFov})
-        sprintAnimation:Play()
+		sprintAnimation:Play()
+		stateChanged:Fire("SPRINT")
 	elseif input.KeyCode == Settings.crouchKey then
 		humanoid.WalkSpeed = Settings.crouchSpeed
 		newTween(camera, Settings.povTweenInfo, {FieldOfView = Settings.crouchFov})
 		crouchAnimation:Play()	
+		stateChanged:Fire("CROUCH")
 	elseif input.KeyCode == Settings.rollKey then
 		rollAnimation:Play()
+		stateChanged:Fire("ROLL")
 	end
 end)
 
@@ -52,7 +56,8 @@ onInputEndCon = UserInputService.InputEnded:Connect(function(input, gameProcesse
 		humanoid.WalkSpeed = Settings.walkSpeed
         newTween(camera, Settings.povTweenInfo, {FieldOfView = Settings.walkFov})
         sprintAnimation:Stop()
-        crouchAnimation:Stop()
+		crouchAnimation:Stop()
+		stateChanged:Fire("WALK")
 	end
 end)
 

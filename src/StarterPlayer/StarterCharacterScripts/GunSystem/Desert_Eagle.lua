@@ -23,13 +23,13 @@ local newTween = core("newTween")
 -- objects
 local player = game.Players.LocalPlayer
 local character = player.Character
+local humanoid = character:WaitForChild("Humanoid")
 
 -- // FUNCTIONS \\ --
 
 function module.new(tool)
 
     -- create vars for metatable
-    local humanoid = character:WaitForChild("Humanoid")
     local animator = humanoid:WaitForChild("Animator")
 
     -- create metatable
@@ -55,6 +55,7 @@ function module.new(tool)
                 isAiming = false,
                 isReloading = false,
                 isMouseDown = false,
+                currentAnimationState = "WALK"
             },
             connections = {
                 activeCameraSettingsChanged = nil,
@@ -78,6 +79,7 @@ function module.new(tool)
     self.remotes.DamageIndicator.OnClientEvent:Connect(function(...)
         self:indicateDamage(...)
     end)
+
 end
 
 -- direct
@@ -233,7 +235,7 @@ function module:changeFireMode()
 end
 
 function module:reload()   
-    if self.temp.states.isAiming or self.temp.states.isReloading or self.temp.states.isMouseDown then
+    if self.temp.states.isAiming or self.temp.states.isReloading or self.temp.states.currentAnimationState ~= "WALK" or self.temp.states.isMouseDown then
         return
     end
 
