@@ -1,3 +1,5 @@
+-- does not include the running hold animation
+
 local module = {}
 module.__index = module
 
@@ -68,6 +70,7 @@ function module.new(tool)
                 stepped = nil,
                 damageIndicatorFired = nil,
                 ammoChanged = nil,
+                stateChanged = nil,
             },
         }
     }, module)
@@ -109,6 +112,7 @@ function module:onToolEquipped(playerMouse)
     -- update GUI
     updateGUI({
         gunName = script.Name,
+        fireMode = self.values.fireMode.Value,
         currentAmmo = self.values.ammo.Value,
         maxAmmo = Settings.gun.maxAmmo,
     })
@@ -225,10 +229,11 @@ function module:initEvents()
     self.temp.connections.activeCameraSettingsChanged = thirdPersonCamera.ActiveCameraSettingsChanged:Connect(function(...)
         self:onActiveCameraSettingsChanged(...)
     end)
-
+    
     self.temp.connections.ammoChanged = self.values.ammo.Changed:Connect(function(currentAmmo)
         updateGUI({
             gunName = script.Name,
+            fireMode = self.values.fireMode.Value,
             currentAmmo = currentAmmo,
             maxAmmo = Settings.gun.maxAmmo,
         })
@@ -253,6 +258,12 @@ function module:changeFireMode()
     local oldFireMode = self.values.fireMode.Value
     local newFireMode = self.remotes.ChangeFireMode:InvokeServer()
     if newFireMode and newFireMode ~= oldFireMode then
+        updateGUI({
+            gunName = script.Name,
+            fireMode = self.values.fireMode.Value,
+            currentAmmo = self.values.ammo.Value,
+            maxAmmo = Settings.gun.maxAmmo,
+        })
         self:initEvents()
     end
 end
