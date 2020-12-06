@@ -45,10 +45,12 @@ function module.new(tool)
             reload = animator:LoadAnimation(waitForPath(tool, "Animations.Reload")),
         },
         values = {
-            fireMode = waitForPath(tool, "Values.FireMode")
+            fireMode = waitForPath(tool, "Values.FireMode"),
+            ammo = waitForPath(tool, "Values.Ammo"),
         },
         sounds = {
-            hit = tool.Sounds.Hit,
+            hit = waitForPath(tool, "Sounds.Hit"),
+            jam = waitForPath(tool, "Sounds.Jam"),
         },
         temp = {
             mouse = nil,
@@ -66,7 +68,8 @@ function module.new(tool)
                 inputEnded = nil,
                 stepped = nil,
                 damageIndicatorFired = nil,
-                stateChanged = nil
+                stateChanged = nil,
+                ammoChanged = nil,
             },
         }
     }, module)
@@ -108,8 +111,9 @@ function module:onToolEquipped(playerMouse)
     -- update GUI
     updateGUI({
         gunName = script.Name,
-        currentAmmo = 100,
-        maxAmmo = 100,
+        fireMode = self.values.fireMode.Value,
+        currentAmmo = self.values.ammo.Value,
+        maxAmmo = Settings.gun.maxAmmo,
     })
 
     -- init events
@@ -237,6 +241,15 @@ function module:initEvents()
         self:stateChanged(...)
     end)
 
+    self.temp.connections.ammoChanged = self.values.ammo.Changed:Connect(function(currentAmmo)
+        updateGUI({
+            gunName = script.Name,
+            fireMode = self.values.fireMode.Value,
+            currentAmmo = currentAmmo,
+            maxAmmo = Settings.gun.maxAmmo,
+        })
+    end)
+
     self.temp.connections.activeCameraSettingsChanged = thirdPersonCamera.ActiveCameraSettingsChanged:Connect(function(...)
         self:onActiveCameraSettingsChanged(...)
     end)
@@ -260,6 +273,12 @@ function module:changeFireMode()
     local oldFireMode = self.values.fireMode.Value
     local newFireMode = self.remotes.ChangeFireMode:InvokeServer()
     if newFireMode and newFireMode ~= oldFireMode then
+        updateGUI({
+            gunName = script.Name,
+            fireMode = self.values.fireMode.Value,
+            currentAmmo = self.values.ammo.Value,
+            maxAmmo = Settings.gun.maxAmmo,
+        })
         self:initEvents()
     end
 end
@@ -284,7 +303,10 @@ function module:shoot()
 
     if os.clock() - self.temp.timeOfRecentFire >= 60 / Settings.gun.fireRate then
         self.temp.timeOfRecentFire = os.clock()
-        self.remotes.Shoot:FireServer(self.temp.mouse.Hit.Position)
+        local success, errorMessage = self.remotes.Shoot:InvokeServer(self.temp.mouse.Hit.Position)
+        if not success and errorMessage == "NO_AMMO" then
+            self.sounds.jam:Play()
+        end
     end
 end
 

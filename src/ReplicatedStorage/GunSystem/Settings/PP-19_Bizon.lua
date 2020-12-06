@@ -2,6 +2,7 @@ return {
     mouseIcon = "rbxassetid://131581677",
     gun = {
         fireRate = 700, -- rounds per minute
+        maxAmmo = 54,
         damageTypes = {
             head = {
                 partNames = {"Head"},

@@ -37,6 +37,7 @@ function module.new(tool)
         owner = tool.Parent.Parent,
         values = {
             fireMode = tool.Values.FireMode,
+            ammo = tool.Values.Ammo,
         },
         sounds = {
             equip = tool.Sounds.Equip,
@@ -85,7 +86,10 @@ function module.new(tool)
 	self.fastCast.castBehavior.CosmeticBulletContainer = cosmeticPartProvider
 	self.fastCast.castBehavior.Acceleration = Settings.bullet.bulletGravity
 	self.fastCast.castBehavior.AutoIgnoreContainer = false
-	
+    
+    -- set ammo
+    self.values.ammo.Value = Settings.gun.maxAmmo
+
 	-- events
 	
 	self.fastCast.caster.RayHit:Connect(function(...)
@@ -104,9 +108,9 @@ function module.new(tool)
         self:onChangeStateFired(...)
     end)
 
-    self.remotes.Shoot.OnServerEvent:Connect(function(...)
-        self:shoot(...)
-    end)
+    self.remotes.Shoot.OnServerInvoke = function(...)
+        return self:shoot(...)
+    end
 
 	self.remotes.ChangeFireMode.OnServerInvoke = function(...)
 		return self:onChangeFireMode(...)
@@ -205,6 +209,7 @@ function module:onChangeStateFired(player, newState)
         newThread(playSound, self.sounds.unequip, self.handle)
     elseif newState == "RELOAD" then
         newThread(playSound, self.sounds.reload, self.handle)
+        self.values.ammo.Value = Settings.gun.maxAmmo
     end
 end
 
@@ -226,6 +231,12 @@ function module:shoot(player, mousePoint)
         return
     end	
     self.temp.canFire = false
+
+    -- check ammo
+    if self.values.ammo.Value <= 0 then
+        return false, "NO_AMMO"
+    end
+    self.values.ammo.Value -= 1
 
 	-- fire gun
     local mouseDirection = (mousePoint - self.handle.GunFirePoint.WorldPosition).Unit
