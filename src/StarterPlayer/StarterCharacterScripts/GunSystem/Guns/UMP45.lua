@@ -9,6 +9,7 @@ local RunService = game:GetService("RunService")
 local Debris = game:GetService("Debris")
 
 -- modules
+local assets = require(game.ReplicatedStorage.assets)
 local Settings = require(game.ReplicatedStorage.GunSystem.Settings[script.Name])
 local thirdPersonCamera = require(game.ReplicatedStorage.Modules.ThirdPersonCamera)
 local updateGUI = require(script.Parent.Parent.GunInfoGUI)
@@ -110,10 +111,11 @@ function module:onToolEquipped(playerMouse)
 
     -- update GUI
     updateGUI({
-        gunName = script.Name,
+        gunName = Settings.gun.name,
         fireMode = self.values.fireMode.Value,
         currentAmmo = self.values.ammo.Value,
         maxAmmo = Settings.gun.maxAmmo,
+        gunIcon = assets[string.lower(script.Name)],
     })
 
     -- init events
@@ -241,13 +243,14 @@ function module:initEvents()
         self:stateChanged(...)
     end)
 
-    self.temp.connections.ammoChanged = self.values.ammo.Changed:Connect(function(currentAmmo)
-        updateGUI({
-            gunName = script.Name,
-            fireMode = self.values.fireMode.Value,
-            currentAmmo = currentAmmo,
-            maxAmmo = Settings.gun.maxAmmo,
-        })
+    self.temp.connections.ammoChanged = self.values.ammo.Changed:Connect(function()
+    updateGUI({
+        gunName = Settings.gun.name,
+        fireMode = self.values.fireMode.Value,
+        currentAmmo = self.values.ammo.Value,
+        maxAmmo = Settings.gun.maxAmmo,
+        gunIcon = assets[string.lower(script.Name)],
+    })
     end)
 
     self.temp.connections.activeCameraSettingsChanged = thirdPersonCamera.ActiveCameraSettingsChanged:Connect(function(...)
@@ -273,12 +276,13 @@ function module:changeFireMode()
     local oldFireMode = self.values.fireMode.Value
     local newFireMode = self.remotes.ChangeFireMode:InvokeServer()
     if newFireMode and newFireMode ~= oldFireMode then
-        updateGUI({
-            gunName = script.Name,
-            fireMode = self.values.fireMode.Value,
-            currentAmmo = self.values.ammo.Value,
-            maxAmmo = Settings.gun.maxAmmo,
-        })
+    updateGUI({
+        gunName = Settings.gun.name,
+        fireMode = self.values.fireMode.Value,
+        currentAmmo = self.values.ammo.Value,
+        maxAmmo = Settings.gun.maxAmmo,
+        gunIcon = assets[string.lower(script.Name)],
+    })
         self:initEvents()
     end
 end

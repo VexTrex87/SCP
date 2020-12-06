@@ -1,6 +1,7 @@
 return {
     mouseIcon = "rbxassetid://131581677",
     gun = {
+        name = "M249",
         fireRate = 800, -- rounds per minute
         maxAmmo = 100,
         damageTypes = {

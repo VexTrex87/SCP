@@ -1,6 +1,7 @@
 return {
     mouseIcon = "rbxassetid://131581677",
     gun = {
+        name = "PP-19 Bizon",
         fireRate = 700, -- rounds per minute
         maxAmmo = 54,
         damageTypes = {

@@ -1,6 +1,5 @@
 -- // VARIABLES \\ --
 
-local assets = require(game.ReplicatedStorage.assets)
 local roact = require(game.ReplicatedStorage.Modules.Roact)
 local currentGUI
 
@@ -77,7 +76,7 @@ local function createScreenGUI(info)
 	return roact.createElement("ScreenGui", {}, {
 		GunName = createGunNameGUI(info.gunName, info.fireMode),
 		Ammo = createAmmoGUI(info.currentAmmo, info.maxAmmo),
-		GunIcon = createIconGUI(assets[info.gunName:lower()]),
+		GunIcon = createIconGUI(info.gunIcon),
 		Border = createBorderGUI()
 	})
 end
