@@ -1,4 +1,5 @@
 local roact = require(game.ReplicatedStorage.Modules.Roact)
+local flash = require(script.parent.Parent.Controllers.Flash)
 
 return function(currentAmmo, maxAmmo)
 	local currentAmmoText = '<font size = "25"><font color = "rgb(255, 255, 255)">' .. currentAmmo .. '</font></font>'
@@ -13,6 +14,7 @@ return function(currentAmmo, maxAmmo)
 		Text = currentAmmoText .. maxAmmoText,
 		TextSize = 25,
 		TextXAlignment = Enum.TextXAlignment.Right,
-		TextYAlignment = Enum.TextYAlignment.Bottom
+		TextYAlignment = Enum.TextYAlignment.Bottom,
+		[roact.Change.Text] = flash
 	}) 
 end

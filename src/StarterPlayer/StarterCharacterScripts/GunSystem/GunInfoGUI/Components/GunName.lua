@@ -1,4 +1,5 @@
 local roact = require(game.ReplicatedStorage.Modules.Roact)
+local flash = require(script.parent.Parent.Controllers.Flash)
 
 return function (gunName, fireMode)
 	local gunNameText = '<font size = "25"><font color = "rgb(255, 255, 255)">' .. gunName .. ': </font></font>'
@@ -14,6 +15,7 @@ return function (gunName, fireMode)
 		TextColor3 = Color3.fromRGB(255, 255, 255),
 		TextSize = 25,
 		TextXAlignment = Enum.TextXAlignment.Left,
-		TextYAlignment = Enum.TextYAlignment.Bottom
+		TextYAlignment = Enum.TextYAlignment.Bottom,
+		[roact.Change.Text] = flash
 	})
 end
