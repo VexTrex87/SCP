@@ -1,5 +1,7 @@
-return function(moduleDirectory, moduleDictionary)
+return function(moduleDirectory)
+    local modules = {}
     for _,module in pairs(moduleDirectory) do
-        moduleDictionary[module.Name] = require(module)
+        modules[module.Name] = require(module)
     end
+    return modules
 end
