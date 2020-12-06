@@ -12,6 +12,7 @@ local collection = core("collection")
 
 -- objects
 local player = game.Players.LocalPlayer
+local gunModules = script:WaitForChild("Guns")
 
 -- // FUNCTIONS \\ --
 
@@ -25,7 +26,7 @@ function init(tool)
     -- find module
     local tags = CollectionService:GetTags(tool)
     for _,tag in pairs(tags) do
-        local module = script:WaitForChild(tag, 1)
+        local module = gunModules:WaitForChild(tag, 1)
         if module then
             require(module).new(tool)
             break

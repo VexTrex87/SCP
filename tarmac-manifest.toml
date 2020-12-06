@@ -1,0 +1,29 @@
+[inputs."assets/desert_eagle.png"]
+hash = "1f55ca1e78c544c86d7d47fe64c784f9d64e74e167e4954e7771bb2c8bd21e68"
+id = 6048706726
+packable = false
+
+[inputs."assets/g19.png"]
+hash = "41c8bee2df0881d090e5fecc0dc60ad14561e37e0aeca302b8657eabb1908bf7"
+id = 6048706785
+packable = false
+
+[inputs."assets/m249.png"]
+hash = "cebb07ab4d433d4451be9d5d384d06a5a2beeb8433e2d073a832f3440f5e36dd"
+id = 6048706837
+packable = false
+
+[inputs."assets/m4a1.png"]
+hash = "e73511370e90a270a2deeee933918294c8ad46ae49678c174939adf1111fccc6"
+id = 6048706895
+packable = false
+
+[inputs."assets/pp-19_bizon.png"]
+hash = "962c9e1f7e97c7aea44d54932df0d7b7ed0738b2a01c53ff65d5d54226a1570e"
+id = 6048706955
+packable = false
+
+[inputs."assets/ump45.png"]
+hash = "adb205680b5ffe6761e38146307352032017ac5273c02db9b28e1be7d0616914"
+id = 6048707006
+packable = false
