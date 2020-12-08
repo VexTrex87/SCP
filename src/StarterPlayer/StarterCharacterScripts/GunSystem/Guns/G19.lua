@@ -40,7 +40,6 @@ function module.new(tool)
     local self = setmetatable({
         tool = tool,
         remotes = tool:WaitForChild("Remotes"),
-        stateChangedEvent = waitForPath(script.Parent.Parent.Parent, "MovementAnimation.StateChanged"),
         animations = {
             hold = animator:LoadAnimation(waitForPath(tool, "Animations.Hold")),
             aim = animator:LoadAnimation(waitForPath(tool, "Animations.Aim")),
@@ -71,7 +70,6 @@ function module.new(tool)
                 stepped = nil,
                 damageIndicatorFired = nil,
                 ammoChanged = nil,
-                stateChanged = nil,
             },
         }
     }, module)
