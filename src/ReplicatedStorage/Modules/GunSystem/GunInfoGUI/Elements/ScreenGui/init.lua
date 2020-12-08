@@ -1,5 +1,5 @@
 local createElement = require(game.ReplicatedStorage.Modules.Core.createElement)
-local createFrame = require(script.Parent.Frame)
+local createFrame = require(script.Frame)
 
 return function()
     return createElement("ScreenGui", {

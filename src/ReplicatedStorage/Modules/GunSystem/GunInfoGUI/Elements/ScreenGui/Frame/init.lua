@@ -1,10 +1,10 @@
 local createElement = require(game.ReplicatedStorage.Modules.Core.createElement)
-local configuration = require(script.Parent.Parent.Configuration)
+local configuration = require(script.Parent.Parent.Parent.Configuration)
 
-local createGunName = require(script.Parent.GunName)
-local createAmmo = require(script.Parent.Ammo)
-local createGunIcon = require(script.Parent.GunIcon)
-local createBorder = require(script.Parent.Border)
+local createGunName = require(script.GunName)
+local createAmmo = require(script.Ammo)
+local createGunIcon = require(script.GunIcon)
+local createBorder = require(script.Border)
 
 return function()
     return createElement("Frame", {

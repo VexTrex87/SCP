@@ -1,5 +1,5 @@
 local createElement = require(game.ReplicatedStorage.Modules.Core.createElement)
-local createUICorner = require(script.Parent.UICorner)
+local createUICorner = require(script.UICorner)
 
 return function()
     return createElement("Frame", {
