@@ -13,7 +13,7 @@ local Debris = game:GetService("Debris")
 local assets = require(game.ReplicatedStorage.Modules.Assets)
 local Settings = require(script.Parent.Parent.Settings[script.Name])
 local thirdPersonCamera = require(game.ReplicatedStorage.Modules.ThirdPersonCamera)
-local updateGUI = require(script.Parent.Parent.GunInfoGUI)
+local gunGui = require(script.Parent.Parent.GunInfoGUI)
 
 -- libraries
 local waitForPath = require(ReplicatedStorage.Modules.Core.waitForPath)
@@ -110,7 +110,7 @@ function module:onToolEquipped(playerMouse)
     self.remotes.ChangeState:FireServer("EQUIP")
 
     -- update GUI
-    updateGUI({
+    gunGui.show({
         gunName = Settings.gun.name,
         fireMode = self.values.fireMode.Value,
         currentAmmo = self.values.ammo.Value,
@@ -144,7 +144,7 @@ function module:onToolUnequipped()
     self.remotes.ChangeState:FireServer("UNEQUIP")
 
     -- update GUI
-    updateGUI()
+    gunGui.hide()
 end
 
 function module:onInputBegan(input, gameProcessed)
@@ -244,13 +244,13 @@ function module:initEvents()
     end)
 
     self.temp.connections.ammoChanged = self.values.ammo.Changed:Connect(function()
-    updateGUI({
-        gunName = Settings.gun.name,
-        fireMode = self.values.fireMode.Value,
-        currentAmmo = self.values.ammo.Value,
-        maxAmmo = Settings.gun.maxAmmo,
-        gunIcon = assets[string.lower(script.Name)],
-    })
+        gunGui.update({
+            gunName = Settings.gun.name,
+            fireMode = self.values.fireMode.Value,
+            currentAmmo = self.values.ammo.Value,
+            maxAmmo = Settings.gun.maxAmmo,
+            gunIcon = assets[string.lower(script.Name)],
+        })
     end)
 
     self.temp.connections.activeCameraSettingsChanged = thirdPersonCamera.ActiveCameraSettingsChanged:Connect(function(...)
@@ -276,13 +276,13 @@ function module:changeFireMode()
     local oldFireMode = self.values.fireMode.Value
     local newFireMode = self.remotes.ChangeFireMode:InvokeServer()
     if newFireMode and newFireMode ~= oldFireMode then
-    updateGUI({
-        gunName = Settings.gun.name,
-        fireMode = self.values.fireMode.Value,
-        currentAmmo = self.values.ammo.Value,
-        maxAmmo = Settings.gun.maxAmmo,
-        gunIcon = assets[string.lower(script.Name)],
-    })
+        gunGui.update({
+            gunName = Settings.gun.name,
+            fireMode = self.values.fireMode.Value,
+            currentAmmo = self.values.ammo.Value,
+            maxAmmo = Settings.gun.maxAmmo,
+            gunIcon = assets[string.lower(script.Name)],
+        })
         self:initEvents()
     end
 end
