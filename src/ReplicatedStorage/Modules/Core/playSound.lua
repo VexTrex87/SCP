@@ -1,5 +1,4 @@
 local Debris = game:GetService("Debris")
-
 return function(sound, newSoundParent, despawnDelay)
 	local newSound = sound:Clone()
 	newSound.Parent = newSoundParent

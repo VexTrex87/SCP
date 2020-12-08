@@ -1,6 +1,4 @@
-local core = require(script.Parent)
-local cloneTable = core("cloneTable")
-
+local cloneTable = require(script.Parent.cloneTable)
 return function(OriginalTable)
 	local copy = {}
 	for k, v in pairs(OriginalTable) do

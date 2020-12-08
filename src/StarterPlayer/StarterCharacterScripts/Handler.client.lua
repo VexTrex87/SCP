@@ -3,8 +3,7 @@
 -- // VARIABLES \\ --
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local core = require(ReplicatedStorage.Modules.Core)
-local newThread = core("newThread")
+local newThread = require(ReplicatedStorage.Modules.Core.newThread)
 local character = script.Parent
 
 -- // COMPILE \\ --

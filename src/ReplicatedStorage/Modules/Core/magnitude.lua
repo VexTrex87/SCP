@@ -1,5 +1,4 @@
 return function(Start, End)
-
 	if typeof(Start) ~= "Vector3" then
 		Start = Start.Position
 	end

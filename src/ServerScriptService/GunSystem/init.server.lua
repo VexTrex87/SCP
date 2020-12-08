@@ -8,8 +8,7 @@ local controller = require(script.Controller)
 local Settings = require(game.ReplicatedStorage.Modules.GunSystem.Settings.Global)
 
 -- libraries
-local core = require(game.ReplicatedStorage.Modules.Core)
-local collection = core("collection")
+local collection = require(game.ReplicatedStorage.Modules.Core.collection)
 
 -- objects
 local gunModules = script.Guns

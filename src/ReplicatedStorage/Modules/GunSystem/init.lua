@@ -1,9 +1,9 @@
 local module = {}
 
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local CollectionService = game:GetService("CollectionService")
 local Settings = require(script.Settings.Global)
-local core = require(game.ReplicatedStorage.Modules.Core)
-local collection = core("collection")
+local collection = require(ReplicatedStorage.Modules.Core.collection)
 local player = game.Players.LocalPlayer
 
 function init(tool)

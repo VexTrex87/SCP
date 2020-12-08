@@ -6,6 +6,7 @@ module.__index = module
 -- // VARIABLES \\ --
 
 -- services
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 local Debris = game:GetService("Debris")
@@ -17,12 +18,11 @@ local thirdPersonCamera = require(game.ReplicatedStorage.Modules.ThirdPersonCame
 local updateGUI = require(script.Parent.Parent.GunInfoGUI)
 
 -- libraries
-local core = require(game.ReplicatedStorage.Modules.Core)
-local waitForPath = core("waitForPath")
-local disconnectConnections = core("disconnectConnections")
-local playSound = core("playSound")
-local randomnum = core("randomnum")
-local newTween = core("newTween")
+local waitForPath = require(ReplicatedStorage.Modules.Core.waitForPath)
+local disconnectConnections = require(ReplicatedStorage.Modules.Core.disconnectConnections)
+local playSound = require(ReplicatedStorage.Modules.Core.playSound)
+local randomNumber = require(ReplicatedStorage.Modules.Core.randomNumber)
+local newTween = require(ReplicatedStorage.Modules.Core.newTween)
 
 -- objects
 local player = game.Players.LocalPlayer
@@ -213,8 +213,8 @@ function module:indicateDamage(targetCharacter, damageType, damageAmount)
     local minOffset = Settings.UI.damageIndicator.minOffset
     local maxOffset = Settings.UI.damageIndicator.minOffset
     newIndicator.StudsOffset = Vector3.new(
-        randomnum(minOffset.X, maxOffset.X, 10),
-        randomnum(minOffset.Y, maxOffset.Y, 10), 
+        randomNumber(minOffset.X, maxOffset.X, 10),
+        randomNumber(minOffset.Y, maxOffset.Y, 10), 
         0
     )   
     newTween(newIndicator.TextLabel, Settings.UI.damageIndicator.tweenInfo, {TextTransparency = 0}).Completed:Wait()
