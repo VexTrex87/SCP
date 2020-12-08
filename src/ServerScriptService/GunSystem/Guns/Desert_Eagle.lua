@@ -8,17 +8,18 @@ local RNG = Random.new()
 local TAU = math.pi * 2	
 
 -- services
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ServerStorage = game:GetService("ServerStorage")
 local Debris = game:GetService("Debris")
 
 -- modules
-local Settings = require(game.ReplicatedStorage.Modules.GunSystem.Settings[script.Name])
+local Settings = require(ReplicatedStorage.Modules.GunSystem.Settings[script.Name])
 local fastCast = require(script.Parent.Parent.FastCastRedux)
 local partCache = require(script.Parent.Parent.PartCache)
 
 -- libraries
-local core = require(game.ServerStorage.Modules.Core)
-local newThread = core("newThread")
-local playSound = core("playSound")
+local newThread = require(ServerStorage.Modules.Core.newThread)
+local playSound = require(ServerStorage.Modules.Core.playSound)
 
 -- objects
 local cosmeticBulletsFolder = workspace:FindFirstChild("CosmeticBulletsFolder") or Instance.new("Folder")

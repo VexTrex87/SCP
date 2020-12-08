@@ -1,6 +1,4 @@
-local core = require(script.Parent)
-local newThread = core("newThread")
-
+local newThread = require(script.Parent.newThread)
 return function(tag, func)
 	local CollectionService = game:GetService("CollectionService")
 
@@ -8,7 +6,9 @@ return function(tag, func)
 		newThread(func, obj)
 	end
 
-	CollectionService:GetInstanceAddedSignal(tag):Connect(function(obj)
+	local instanceAddedEvent = CollectionService:GetInstanceAddedSignal(tag):Connect(function(obj)
 		newThread(func, obj)
 	end)
+
+	return instanceAddedEvent
 end

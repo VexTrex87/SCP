@@ -1,6 +1,8 @@
 -- // VARIABLES \\ --
 
 -- services
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ServerStorage = game:GetService("ServerStorage")
 local CollectionService = game:GetService("CollectionService")
 
 -- modules
@@ -8,7 +10,7 @@ local controller = require(script.Controller)
 local Settings = require(game.ReplicatedStorage.Modules.GunSystem.Settings.Global)
 
 -- libraries
-local collection = require(game.ReplicatedStorage.Modules.Core.collection)
+local collection = require(game.ServerStorage.Modules.Core.collection)
 
 -- objects
 local gunModules = script.Guns
