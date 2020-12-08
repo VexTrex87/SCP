@@ -12,7 +12,7 @@ local Debris = game:GetService("Debris")
 
 -- modules
 local assets = require(game.ReplicatedStorage.assets)
-local Settings = require(game.ReplicatedStorage.GunSystem.Settings[script.Name])
+local Settings = require(script.Parent.Parent.Settings[script.Name])
 local thirdPersonCamera = require(game.ReplicatedStorage.Modules.ThirdPersonCamera)
 local updateGUI = require(script.Parent.Parent.GunInfoGUI)
 

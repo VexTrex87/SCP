@@ -11,7 +11,7 @@ local TAU = math.pi * 2
 local Debris = game:GetService("Debris")
 
 -- modules
-local Settings = require(game.ReplicatedStorage.GunSystem.Settings[script.Name])
+local Settings = require(game.ReplicatedStorage.Modules.GunSystem.Settings[script.Name])
 local fastCast = require(script.Parent.Parent.FastCastRedux)
 local partCache = require(script.Parent.Parent.PartCache)
 

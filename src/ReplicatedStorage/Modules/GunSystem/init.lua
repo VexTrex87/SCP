@@ -1,7 +1,7 @@
 local module = {}
 
 local CollectionService = game:GetService("CollectionService")
-local Settings = require(game.ReplicatedStorage.GunSystem.Settings.Global)
+local Settings = require(script.Settings.Global)
 local core = require(game.ReplicatedStorage.Modules.Core)
 local collection = core("collection")
 local player = game.Players.LocalPlayer
