@@ -1,14 +1,25 @@
 -- handles all server related code
 
--- add animator to humanoid & overrides animations
-local createAnimator = require(game.ServerStorage.Modules.CreateAnimator)
-local overrideAnimations = require(game.ServerStorage.Modules.OverrideAnimations)
+-- // VARIABLES \\ --
+
+local ServerStorage = game:GetService("ServerStorage")
+
+local modules = ServerStorage.Modules
+local newThread = require(ServerStorage.Modules.Core.newThread)
+
+local createAnimator = require(modules.CreateAnimator)
+local overrideAnimations = require(modules.OverrideAnimations)
+local gunSystem = require(modules.GunSystem)
+local npcHandler = require(modules.NPCHandler)
+
+-- // EVENTS \\ --
 
 game.Players.PlayerAdded:Connect(function(player)
     player.CharacterAdded:Connect(createAnimator)
     player.CharacterAppearanceLoaded:Connect(overrideAnimations)
 end)
 
--- gun system
-local gunSystem = require(game.ServerStorage.Modules.GunSystem)
-gunSystem()
+-- // COMPILE \\ --
+
+newThread(gunSystem)
+newThread(npcHandler)
