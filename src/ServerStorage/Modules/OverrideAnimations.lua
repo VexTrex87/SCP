@@ -1,11 +1,4 @@
-local module = {}
-
-function module.createAnimator(character)
-    local newAnimator = Instance.new("Animator")
-    newAnimator.Parent = character.Humanoid
-end
-
-function module.overrideAnimations(character)
+return function(character)
     local humanoid = character.Humanoid
     local animateScript = character:WaitForChild("Animate")
 
@@ -25,5 +18,3 @@ function module.overrideAnimations(character)
 	animateScript.swimidle.SwimIdle.AnimationId = "rbxassetid://616166655"  -- Swim (Idle)
 	animateScript.climb.ClimbAnim.AnimationId = "rbxassetid://6017466326"    -- Climb
 end
-
-return module
