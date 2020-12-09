@@ -37,5 +37,19 @@ return {
             FriendlyColor = Color3.fromRGB(0, 255, 0),
             EnemyColor = Color3.fromRGB(255, 0, 0)
         },
+        Desert_Eagle = {
+            UnzoomedSize = UDim2.new(0, 80, 0, 80),
+            ZoomedSize = UDim2.new(0, 30, 0, 30),
+            NeutralColor = Color3.fromRGB(255, 255, 255),
+            FriendlyColor = Color3.fromRGB(0, 255, 0),
+            EnemyColor = Color3.fromRGB(255, 0, 0)
+        },
+        G19 = {
+            UnzoomedSize = UDim2.new(0, 80, 0, 80),
+            ZoomedSize = UDim2.new(0, 30, 0, 30),
+            NeutralColor = Color3.fromRGB(255, 255, 255),
+            FriendlyColor = Color3.fromRGB(0, 255, 0),
+            EnemyColor = Color3.fromRGB(255, 0, 0)
+        },
     }
 }

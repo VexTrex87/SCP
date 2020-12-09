@@ -7,6 +7,7 @@ local createUICorner = require(ReplicatedStorage.GuiElements.UICorner)
 return function(anchorPoint: UDim, Name: String, Position: UDim2, Size: UDim2): instance
 	return CreateElement("Frame", {
 		AnchorPoint = anchorPoint,
+		BackgroundTransparency = 0.7,
 		BackgroundColor3 = Configuration.NeutralColor,
 		Name = Name,
 		Position = Position,
