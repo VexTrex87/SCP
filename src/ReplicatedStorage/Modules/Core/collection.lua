@@ -1,5 +1,5 @@
 local CollectionService = game:GetService("CollectionService")
-local newThread = require(script.Parent.newThread)
+local newThread = require(script.Parent.NewThread)
 
 return function(tag, func)
 	for _,obj in pairs(CollectionService:GetTagged(tag)) do

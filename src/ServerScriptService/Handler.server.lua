@@ -2,12 +2,15 @@
 
 -- // VARIABLES \\ --
 
+-- services
 local ServerStorage = game:GetService("ServerStorage")
 local Players = game:GetService("Players")
 
+-- libraries
 local modules = ServerStorage.Modules
-local newThread = require(ServerStorage.Modules.Core.newThread)
+local newThread = require(modules.Core.NewThread)
 
+-- modules
 local createAnimator = require(modules.CreateAnimator)
 local overrideAnimations = require(modules.OverrideAnimations)
 local gunSystem = require(modules.GunSystem)

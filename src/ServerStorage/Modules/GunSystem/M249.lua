@@ -11,22 +11,22 @@ local ServerStorage = game:GetService("ServerStorage")
 local modules = ServerStorage.Modules
 local fastCast = require(modules.FastCastRedux)
 local partCache = require(modules.PartCache)
-local Settings = require(ReplicatedStorage.Modules.GunSystem.Settings[script.Name])
+local Configuration = require(ReplicatedStorage.Modules.GunSystem.Configuration[script.Name])
 
 local effectsModules = modules.Effects
-local playSmoke = require(effectsModules.smoke)
-local playLight = require(effectsModules.light)
-local playSound = require(effectsModules.sound)
-local playBulletHit = require(effectsModules.bulletHit)
+local playSmoke = require(effectsModules.Smoke)
+local playLight = require(effectsModules.Light)
+local playSound = require(effectsModules.Sound)
+local playBulletHit = require(effectsModules.BulletHit)
 
 -- libraries
 local coreModules = modules.Core
-local newThread = require(coreModules.newThread)
-local getCharacterFromHitPart = require(coreModules.getCharacterFromHitPart)
-local disconnectConnections = require(coreModules.disconnectConnections)
+local newThread = require(coreModules.NewThread)
+local getCharacterFromHitPart = require(coreModules.GetCharacterFromHitPart)
+local disconnectConnections = require(coreModules.DisconnectConnections)
 
 -- objects
-local debrisHolder = workspace.Debris
+local bulletDebris = workspace.Debris.Bullets
 
 -- // FUNCTIONS \\ --
 
@@ -94,7 +94,7 @@ function module:onRayHit(info)
         self.effects.impactParticle, 
         hitPart, 
         CFrame.new(hitPoint, hitPoint + normal), 
-        Settings.effects.impactParticleDuration
+        Configuration.effects.impactParticleDuration
     )
 
     -- check if ray hit a character
@@ -110,7 +110,7 @@ function module:onRayHit(info)
     end
 
     -- deal damage depending on where it was hit
-    for damageInfoIndex, damageInfo in pairs(Settings.gun.damageTypes) do
+    for damageInfoIndex, damageInfo in pairs(Configuration.gun.damageTypes) do
         if typeof(damageInfo.partNames) == "table" then
             if table.find(damageInfo.partNames, hitPart.Name) then
                 damageType = damageInfoIndex
@@ -140,7 +140,7 @@ function module:onRayUpdated(info)
 	info.cosmeticBulletObject.Size = Vector3.new(
         info.cosmeticBulletObject.Size.X, 
         info.cosmeticBulletObject.Size.Y, 
-        bulletVelocity / Settings.bullet.bulletLengthMultiplier
+        bulletVelocity / Configuration.bullet.bulletLengthMultiplier
     )
 
 	-- adjust bullet pos
@@ -179,7 +179,7 @@ function module:onChangeStateFired(player, newState)
         newThread(playSound, self.sounds.unequip, self.handle)
     elseif newState == "RELOAD" then
         newThread(playSound, self.sounds.reload, self.handle)
-        self.values.ammo.Value = Settings.gun.maxAmmo
+        self.values.ammo.Value = Configuration.gun.maxAmmo
     end
 end
 
@@ -190,7 +190,7 @@ function module:shoot(player, mousePoint)
     end
 
     -- firerate debounce
-    if self.temp.isMouseDown and os.clock() - self.temp.timeOfRecentFire < 60 / Settings.fireRate then
+    if self.temp.isMouseDown and os.clock() - self.temp.timeOfRecentFire < 60 / Configuration.fireRate then
 		return
     end
     self.temp.timeOfRecentFire = os.clock()
@@ -223,7 +223,7 @@ function module:onChangeFireMode(player)
         player:Kick("Attempted to fire " .. self.owner.Name .. "'s remote.")
     end
 
-	local fireModes = Settings.gun.fireMode
+	local fireModes = Configuration.gun.fireMode
 	local oldFireModeIndex = table.find(fireModes, self.values.fireMode.Value)
 	local newFireMode
 
@@ -246,30 +246,30 @@ end
 function module:setDefaults()
     -- create bullet
     self.fastCast.cosmeticBullet = Instance.new("Part")
-	for propertyName, propertyValue in pairs(Settings.bullet.properties) do
+	for propertyName, propertyValue in pairs(Configuration.bullet.properties) do
 		self.fastCast.cosmeticBullet[propertyName] = propertyValue
     end 
     
     -- new raycast paras
 	self.fastCast.castParams = RaycastParams.new()
-	for propertyName, propertyValue in pairs(Settings.raycastParas) do
+	for propertyName, propertyValue in pairs(Configuration.raycastParas) do
 		self.fastCast.castParams[propertyName] = propertyValue
     end
 
 	-- data packets
 	self.fastCast.castBehavior = fastCast.newBehavior()
 	self.fastCast.castBehavior.RaycastParams = self.fastCast.castParams
-	self.fastCast.castBehavior.MaxDistance = Settings.bullet.bulletMaxDist
+	self.fastCast.castBehavior.MaxDistance = Configuration.bullet.bulletMaxDist
 
 	-- part cache
-	local cosmeticPartProvider = partCache.new(self.fastCast.cosmeticBullet, 100, debrisHolder.Bullets)
+	local cosmeticPartProvider = partCache.new(self.fastCast.cosmeticBullet, 100, bulletDebris)
 	self.fastCast.castBehavior.CosmeticBulletProvider = cosmeticPartProvider
 	self.fastCast.castBehavior.CosmeticBulletContainer = cosmeticPartProvider
-	self.fastCast.castBehavior.Acceleration = Settings.bullet.bulletGravity
+	self.fastCast.castBehavior.Acceleration = Configuration.bullet.bulletGravity
 	self.fastCast.castBehavior.AutoIgnoreContainer = false
     
     -- set ammo
-    self.values.ammo.Value = Settings.gun.maxAmmo
+    self.values.ammo.Value = Configuration.gun.maxAmmo
 end
 
 function module:initEvents()
@@ -305,20 +305,20 @@ end
 function module:shootBullet(direction, sender)	
 	-- random angles
 	local directionalCF = CFrame.new(Vector3.new(), direction)
-	direction = (directionalCF * CFrame.fromOrientation(0, 0, Random.new():NextNumber(0, math.pi * 2	)) * CFrame.fromOrientation(math.rad(Random.new():NextNumber(Settings.bullet.minBulletSpreadAngle, Settings.bullet.maxBulletSpreadAngle)), 0, 0)).LookVector
+	direction = (directionalCF * CFrame.fromOrientation(0, 0, Random.new():NextNumber(0, math.pi * 2	)) * CFrame.fromOrientation(math.rad(Random.new():NextNumber(Configuration.bullet.minBulletSpreadAngle, Configuration.bullet.maxBulletSpreadAngle)), 0, 0)).LookVector
 
 	-- realistic bullet velocity
 	local root = self.tool.Parent:WaitForChild("HumanoidRootPart", 1)
 	local myMovementSpeed = root.Velocity
-	local modifiedBulletSpeed = (direction * Settings.bullet.bulletSpeed) + myMovementSpeed
+	local modifiedBulletSpeed = (direction * Configuration.bullet.bulletSpeed) + myMovementSpeed
 
 	-- fire bullet
     self.fastCast.caster:Fire(self.handle.GunFirePoint.WorldPosition, direction, modifiedBulletSpeed, self.fastCast.castBehavior, sender)
 
     -- play effects
     newThread(playSound, self.sounds.shoot, self.handle)	
-    newThread(playLight, self.effects.muzzleLight, self.handle, Settings.effects.muzzleFlashTime)
-	newThread(playSmoke, self.effects.muzzleSmoke, self.handle, Settings.effects.smokeDuration, Settings.effects.smokeDespawnDelay)
+    newThread(playLight, self.effects.muzzleLight, self.handle, Configuration.effects.muzzleFlashTime)
+	newThread(playSmoke, self.effects.muzzleSmoke, self.handle, Configuration.effects.smokeDuration, Configuration.effects.smokeDespawnDelay)
 end
 
 function module:onToolAncestryChanged(children, parent)

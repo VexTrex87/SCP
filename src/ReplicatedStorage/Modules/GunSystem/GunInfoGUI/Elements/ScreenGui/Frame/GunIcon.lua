@@ -1,4 +1,4 @@
-local createElement = require(game.ReplicatedStorage.Modules.Core.createElement)
+local createElement = require(game.ReplicatedStorage.Modules.Core.CreateElement)
 
 return function()
     return createElement("ImageLabel", {

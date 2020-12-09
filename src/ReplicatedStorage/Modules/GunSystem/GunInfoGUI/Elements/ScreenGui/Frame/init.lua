@@ -1,4 +1,4 @@
-local createElement = require(game.ReplicatedStorage.Modules.Core.createElement)
+local createElement = require(game.ReplicatedStorage.Modules.Core.CreateElement)
 local configuration = require(script.Parent.Parent.Parent.Configuration)
 
 local createGunName = require(script.GunName)

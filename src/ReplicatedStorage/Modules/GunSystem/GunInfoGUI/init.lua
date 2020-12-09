@@ -1,11 +1,20 @@
 local module = {}
 module.__index = module
 
+-- // VARIABLES \\ --
+
+-- modules
 local createScreenGui = require(script.Elements.ScreenGui)
 local configuration = require(script.Configuration)
-local newTween = require(game.ReplicatedStorage.Modules.Core.newTween)
-local newThread = require(game.ReplicatedStorage.Modules.Core.newThread)
+
+-- libraries
+local newTween = require(game.ReplicatedStorage.Modules.Core.NewTween)
+local newThread = require(game.ReplicatedStorage.Modules.Core.NewThread)
+
+-- objects
 local playerGui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- // FUNCTIONS \\ --
 
 function module.create()
 	local GUI = createScreenGui()

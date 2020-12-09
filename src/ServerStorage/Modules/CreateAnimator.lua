@@ -1,4 +1,5 @@
 return function(character)
+    local humanoid = character:WaitForChild("Humanoid")
     local newAnimator = Instance.new("Animator")
-    newAnimator.Parent = character.Humanoid
+    newAnimator.Parent = humanoid
 end

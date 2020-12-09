@@ -13,6 +13,11 @@ hash = "cebb07ab4d433d4451be9d5d384d06a5a2beeb8433e2d073a832f3440f5e36dd"
 id = 6048706837
 packable = false
 
+[inputs."assets/m249_cursor_hold_normal.png"]
+hash = "6c97cdca54ecc53811885462c1d4d61d3e92d380acd87b314b69c6f91794cdfc"
+id = 6061947395
+packable = false
+
 [inputs."assets/m4a1.png"]
 hash = "e73511370e90a270a2deeee933918294c8ad46ae49678c174939adf1111fccc6"
 id = 6048706895

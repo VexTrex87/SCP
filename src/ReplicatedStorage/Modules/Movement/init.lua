@@ -9,8 +9,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 -- modules
 local configuration = require(script.Configuration)
-local newTween = require(ReplicatedStorage.Modules.Core.newTween)
-local disconnectConnections = require(ReplicatedStorage.Modules.Core.disconnectConnections)
+local newTween = require(ReplicatedStorage.Modules.Core.NewTween)
+local disconnectConnections = require(ReplicatedStorage.Modules.Core.DisconnectConnections)
 
 -- objects
 local animationStorage = ReplicatedStorage.Objects.Animations.Movement

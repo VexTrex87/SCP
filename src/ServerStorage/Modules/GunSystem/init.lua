@@ -2,8 +2,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
 local CollectionService = game:GetService("CollectionService")
 
-local configuration = require(ReplicatedStorage.Modules.GunSystem.Settings.Global)
-local collection = require(ServerStorage.Modules.Core.collection)
+local configuration = require(ReplicatedStorage.Modules.GunSystem.Configuration.Global)
+local collection = require(ServerStorage.Modules.Core.Collection)
 
 return function()
     collection(configuration.gunTag, function(tool)

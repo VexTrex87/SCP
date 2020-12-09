@@ -26,7 +26,7 @@ local newTween = require(ReplicatedStorage.Modules.Core.newTween)
 
 -- objects
 local player = game.Players.LocalPlayer
-local character = player.Character
+local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character:WaitForChild("Humanoid")
 
 -- // FUNCTIONS \\ --

@@ -10,36 +10,34 @@ local RunService = game:GetService("RunService")
 local Debris = game:GetService("Debris")
 
 -- modules
-local assets = require(game.ReplicatedStorage.Modules.Assets)
-local Settings = require(script.Parent.Parent.Settings[script.Name])
-local thirdPersonCamera = require(game.ReplicatedStorage.Modules.ThirdPersonCamera)
-local gunGui = require(script.Parent.Parent.GunInfoGUI)
+local gunName = script.Name
+local modules = ReplicatedStorage.Modules
+local Assets = require(modules.Assets)
+local Configuration = require(modules.GunSystem.Configuration[gunName])
+local ThirdPersonCamera = require(modules.ThirdPersonCamera)
+local GunGui = require(modules.GunSystem.GunInfoGUI)
 
 -- libraries
-local coreModules = ReplicatedStorage.Modules.Core
-local waitForPath = require(coreModules.waitForPath)
-local disconnectConnections = require(coreModules.disconnectConnections)
-local playSound = require(coreModules.playSound)
-local randomNumber = require(coreModules.randomNumber)
-local newTween = require(coreModules.newTween)
+local coreModules = modules.Core
+local waitForPath = require(coreModules.WaitForPath)
+local disconnectConnections = require(coreModules.DisconnectConnections)
+local playSound = require(coreModules.PlaySound)
+local randomNumber = require(coreModules.RandomNumber)
+local newTween = require(coreModules.NewTween)
 
 -- objects
 local player = game.Players.LocalPlayer
-local character = player.Character
+local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character:WaitForChild("Humanoid")
 
 -- // FUNCTIONS \\ --
 
 function module.new(tool)
-
-    -- create vars for metatable
     local animator = humanoid:WaitForChild("Animator")
-
-    -- create metatable
     local self = setmetatable({
         tool = tool,
         remotes = tool:WaitForChild("Remotes"),
-        stateChangedEvent = game.ReplicatedStorage.Objects.Remotes.Movement.StateChanged,
+        stateChangedEvent = ReplicatedStorage.Objects.Remotes.Movement.StateChanged,
         animations = {
             hold = animator:LoadAnimation(waitForPath(tool, "Animations.Hold")),
             runningHold = animator:LoadAnimation(waitForPath(tool, "Animations.RunningHold")),
@@ -76,19 +74,7 @@ function module.new(tool)
         }
     }, module)
 
-    -- events
-    self.tool.Equipped:Connect(function(...)
-        self:onToolEquipped(...)
-    end)
-
-    self.tool.Unequipped:Connect(function()
-        self:onToolUnequipped()
-    end)
-
-    self.remotes.DamageIndicator.OnClientEvent:Connect(function(...)
-        self:indicateDamage(...)
-    end)
-
+    self:initEvents()
 end
 
 -- direct
@@ -97,30 +83,24 @@ function module:onToolEquipped(playerMouse)
     self.temp.states.isEquipped = true
 
     -- start third person camera
-    thirdPersonCamera:Enable()
-    thirdPersonCamera:SetCharacterAlignment(true)
+    ThirdPersonCamera:Enable()
+    ThirdPersonCamera:SetCharacterAlignment(true)
 
-    -- set mouse
     self.temp.mouse = playerMouse
     self:updateMouseIcon()
-
-    -- play hold animation
     self.animations.hold:Play()
-
-    -- play sound
     self.remotes.ChangeState:FireServer("EQUIP")
 
     -- update GUI
-    gunGui.show({
-        gunName = Settings.gun.name,
+    GunGui.show({
+        gunName = Configuration.gun.name,
         fireMode = self.values.fireMode.Value,
         currentAmmo = self.values.ammo.Value,
-        maxAmmo = Settings.gun.maxAmmo,
-        gunIcon = assets[string.lower(script.Name)],
+        maxAmmo = Configuration.gun.maxAmmo,
+        gunIcon = Assets[string.lower(gunName)],
     })
 
-    -- init events
-    self:initEvents()
+    self:initEquipEvents()
 end
 
 function module:onToolUnequipped()
@@ -129,11 +109,9 @@ function module:onToolUnequipped()
     self.temp.states.isReloading = false
     self.temp.states.isAiming = false
 
-    -- disconnect connections
     disconnectConnections(self.temp.connections)
-
-    -- stop third person camera
-    thirdPersonCamera:Disable()
+    ThirdPersonCamera:Disable()
+    self.remotes.ChangeState:FireServer("UNEQUIP")
 
     -- stop all animations
     self.animations.runningHold:Stop()
@@ -141,11 +119,7 @@ function module:onToolUnequipped()
     self.animations.aim:Stop()
     self.animations.reload:Stop()
 
-    -- play sound
-    self.remotes.ChangeState:FireServer("UNEQUIP")
-
-    -- update GUI
-    gunGui.hide()
+    GunGui.hide()
 end
 
 function module:onInputBegan(input, gameProcessed)
@@ -153,16 +127,16 @@ function module:onInputBegan(input, gameProcessed)
         return
     end
 
-    if input.KeyCode == Settings.keybinds.reload then
+    if input.KeyCode == Configuration.keybinds.reload then
         self:reload()
-    elseif input.KeyCode == Settings.keybinds.changeFireMode then
+    elseif input.KeyCode == Configuration.keybinds.changeFireMode then
         self:changeFireMode()
     elseif input.UserInputType == Enum.UserInputType.MouseButton1 then
 		if self.values.fireMode.Value == "AUTO" then
             self.temp.states.isMouseDown = true 
+        end
 	elseif self.values.fireMode.Value == "SEMI" then
 		self:shoot()
-		end	
     end
 end
 
@@ -202,26 +176,24 @@ function module:indicateDamage(targetCharacter, damageType, damageAmount)
     local newIndicator = self.tool.UI.DamageIndicator:Clone()
     newIndicator.TextLabel.Text = damageAmount
 
-    -- set properties for GUI
-    for propertyName, propertyValue in pairs(Settings.UI.damageIndicator[damageType]) do
+    for propertyName, propertyValue in pairs(Configuration.UI.damageIndicator[damageType]) do
         newIndicator.TextLabel[propertyName] = propertyValue
     end
 
     newIndicator.Enabled = true
     newIndicator.Parent = root 
-    Debris:AddItem(newIndicator, Settings.UI.damageIndicator.maxduration)
+    Debris:AddItem(newIndicator, Configuration.UI.damageIndicator.maxduration)
     playSound(self.sounds.hit, self.tool.Handle)
 
-    -- set position of GUI
-    local minOffset = Settings.UI.damageIndicator.minOffset
-    local maxOffset = Settings.UI.damageIndicator.minOffset
+    local minOffset = Configuration.UI.damageIndicator.minOffset
+    local maxOffset = Configuration.UI.damageIndicator.minOffset
     newIndicator.StudsOffset = Vector3.new(
         randomNumber(minOffset.X, maxOffset.X, 10),
         randomNumber(minOffset.Y, maxOffset.Y, 10), 
         0
     )   
-    newTween(newIndicator.TextLabel, Settings.UI.damageIndicator.tweenInfo, {TextTransparency = 0}).Completed:Wait()
-    newTween(newIndicator.TextLabel, Settings.UI.damageIndicator.tweenInfo, {TextTransparency = 1})
+    newTween(newIndicator.TextLabel, Configuration.UI.damageIndicator.tweenInfo, {TextTransparency = 0}).Completed:Wait()
+    newTween(newIndicator.TextLabel, Configuration.UI.damageIndicator.tweenInfo, {TextTransparency = 1})
 end
 
 function module:stateChanged(newState)
@@ -238,6 +210,20 @@ end
 -- indirect
 
 function module:initEvents()
+    self.tool.Equipped:Connect(function(...)
+        self:onToolEquipped(...)
+    end)
+
+    self.tool.Unequipped:Connect(function()
+        self:onToolUnequipped()
+    end)
+
+    self.remotes.DamageIndicator.OnClientEvent:Connect(function(...)
+        self:indicateDamage(...)
+    end)
+end
+
+function module:initEquipEvents()
     disconnectConnections(self.temp.connections)
 
     self.temp.connections.stateChanged = self.stateChangedEvent.Event:Connect(function(...)
@@ -245,16 +231,16 @@ function module:initEvents()
     end)
 
     self.temp.connections.ammoChanged = self.values.ammo.Changed:Connect(function()
-        gunGui.update({
-            gunName = Settings.gun.name,
+        GunGui.update({
+            gunName = Configuration.gun.name,
             fireMode = self.values.fireMode.Value,
             currentAmmo = self.values.ammo.Value,
-            maxAmmo = Settings.gun.maxAmmo,
-            gunIcon = assets[string.lower(script.Name)],
+            maxAmmo = Configuration.gun.maxAmmo,
+            gunIcon = Assets[string.lower(gunName)],
         })
     end)
 
-    self.temp.connections.activeCameraSettingsChanged = thirdPersonCamera.ActiveCameraSettingsChanged:Connect(function(...)
+    self.temp.connections.activeCameraSettingsChanged = ThirdPersonCamera.ActiveCameraSettingsChanged:Connect(function(...)
         self:onActiveCameraSettingsChanged(...)
     end)
 
@@ -277,12 +263,12 @@ function module:changeFireMode()
     local oldFireMode = self.values.fireMode.Value
     local newFireMode = self.remotes.ChangeFireMode:InvokeServer()
     if newFireMode and newFireMode ~= oldFireMode then
-        gunGui.update({
-            gunName = Settings.gun.name,
+        GunGui.update({
+            gunName = Configuration.gun.name,
             fireMode = self.values.fireMode.Value,
             currentAmmo = self.values.ammo.Value,
-            maxAmmo = Settings.gun.maxAmmo,
-            gunIcon = assets[string.lower(script.Name)],
+            maxAmmo = Configuration.gun.maxAmmo,
+            gunIcon = Assets[string.lower(gunName)],
         })
         self:initEvents()
     end
@@ -306,7 +292,7 @@ function module:shoot()
         return
     end
 
-    if os.clock() - self.temp.timeOfRecentFire >= 60 / Settings.gun.fireRate then
+    if os.clock() - self.temp.timeOfRecentFire >= 60 / Configuration.gun.fireRate then
         self.temp.timeOfRecentFire = os.clock()
         local success, errorMessage = self.remotes.Shoot:InvokeServer(self.temp.mouse.Hit.Position)
         if not success and errorMessage == "NO_AMMO" then
@@ -317,7 +303,7 @@ end
 
 function module:updateMouseIcon()
 	if self.temp.mouse and not self.tool.Parent:IsA("Backpack") then
-		self.temp.mouse.Icon = Settings.mouseIcon
+		self.temp.mouse.Icon = Configuration.mouseIcon
 	end
 end
 

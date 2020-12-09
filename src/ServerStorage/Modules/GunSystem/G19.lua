@@ -14,19 +14,19 @@ local partCache = require(modules.PartCache)
 local Settings = require(ReplicatedStorage.Modules.GunSystem.Settings[script.Name])
 
 local effectsModules = modules.Effects
-local playSmoke = require(effectsModules.smoke)
-local playLight = require(effectsModules.light)
-local playSound = require(effectsModules.sound)
-local playBulletHit = require(effectsModules.bulletHit)
+local playSmoke = require(effectsModules.Smoke)
+local playLight = require(effectsModules.Light)
+local playSound = require(effectsModules.Sound)
+local playBulletHit = require(effectsModules.BulletHit)
 
 -- libraries
 local coreModules = modules.Core
-local newThread = require(coreModules.newThread)
-local getCharacterFromHitPart = require(coreModules.getCharacterFromHitPart)
-local disconnectConnections = require(coreModules.disconnectConnections)
+local newThread = require(coreModules.NewThread)
+local getCharacterFromHitPart = require(coreModules.GetCharacterFromHitPart)
+local disconnectConnections = require(coreModules.DisconnectConnections)
 
 -- objects
-local debrisHolder = workspace.Debris
+local bulletDebris = workspace.Debris.Bullets
 
 -- // FUNCTIONS \\ --
 
@@ -262,7 +262,7 @@ function module:setDefaults()
 	self.fastCast.castBehavior.MaxDistance = Settings.bullet.bulletMaxDist
 
 	-- part cache
-	local cosmeticPartProvider = partCache.new(self.fastCast.cosmeticBullet, 100, debrisHolder.Bullets)
+	local cosmeticPartProvider = partCache.new(self.fastCast.cosmeticBullet, 100, bulletDebris.Bullets)
 	self.fastCast.castBehavior.CosmeticBulletProvider = cosmeticPartProvider
 	self.fastCast.castBehavior.CosmeticBulletContainer = cosmeticPartProvider
 	self.fastCast.castBehavior.Acceleration = Settings.bullet.bulletGravity

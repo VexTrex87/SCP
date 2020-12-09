@@ -7,8 +7,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local CollectionService = game:GetService("CollectionService")
 
 -- modules
-local Settings = require(script.Settings.Global)
-local collection = require(ReplicatedStorage.Modules.Core.collection)
+local Configuration = require(ReplicatedStorage.Modules.GunSystem.Configuration.Global)
+local collection = require(ReplicatedStorage.Modules.Core.Collection)
 local gunGui = require(game.ReplicatedStorage.Modules.GunSystem.GunInfoGUI)
 
 -- objects
@@ -35,7 +35,7 @@ function init(tool)
 end
 
 function module.new()
-    collection(Settings.gunTag, init)
+    collection(Configuration.gunTag, init)
 end
 
 -- // COMPILE \\ --
