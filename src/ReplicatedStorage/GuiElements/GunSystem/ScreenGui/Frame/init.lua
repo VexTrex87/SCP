@@ -1,5 +1,7 @@
-local createElement = require(game.ReplicatedStorage.Modules.Core.CreateElement)
-local configuration = require(script.Parent.Parent.Parent.Configuration)
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local createElement = require(ReplicatedStorage.Modules.Core.CreateElement)
+local configuration = require(ReplicatedStorage.Modules.GunSystem.GunInfoGUI.Configuration)
 
 local createGunName = require(script.GunName)
 local createAmmo = require(script.Ammo)

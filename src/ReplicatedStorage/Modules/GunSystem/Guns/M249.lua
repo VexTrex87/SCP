@@ -134,9 +134,9 @@ function module:onInputBegan(input, gameProcessed)
     elseif input.UserInputType == Enum.UserInputType.MouseButton1 then
 		if self.values.fireMode.Value == "AUTO" then
             self.temp.states.isMouseDown = true 
+        elseif self.values.fireMode.Value == "SEMI" then
+            self:shoot()
         end
-	elseif self.values.fireMode.Value == "SEMI" then
-		self:shoot()
     end
 end
 
