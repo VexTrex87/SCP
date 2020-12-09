@@ -10,6 +10,7 @@ local CollectionService = game:GetService("CollectionService")
 local Configuration = require(ReplicatedStorage.Modules.GunSystem.Configuration.Global)
 local collection = require(ReplicatedStorage.Modules.Core.Collection)
 local gunGui = require(game.ReplicatedStorage.Modules.GunSystem.GunInfoGUI)
+local crosshair = require(game.ReplicatedStorage.Modules.GunSystem.GunCrosshair)
 
 -- objects
 local player = game.Players.LocalPlayer
@@ -41,5 +42,6 @@ end
 -- // COMPILE \\ --
 
 gunGui.create()
+crosshair.create()
 
 return module

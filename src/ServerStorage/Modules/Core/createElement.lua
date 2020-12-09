@@ -1,9 +1,9 @@
 return function(className: string, properties: table, subelement: table): instance
     -- create element based on class name
     assert(className, "Missing Parameter 1: className (string)")
-    local newElement
+    local CreateElement
     local success, errorMessage = pcall(function()
-        newElement = Instance.new(className)
+        CreateElement = Instance.new(className)
     end)
     assert(success, "Rovis Error: Unable to create element with the className (" .. className .. "). Error Message: " .. tostring(errorMessage))
 
@@ -15,7 +15,7 @@ return function(className: string, properties: table, subelement: table): instan
         local keys = string.split(propertyName, ":")
         if keys[1]:lower() == "event" then
             -- check if property name is an event
-            local event = newElement[keys[2]]
+            local event = CreateElement[keys[2]]
             assert(event, "Rovis Error: Event (" .. keys[2] .. ") does not exist.")
 
             -- connect callback function to event
@@ -27,7 +27,7 @@ return function(className: string, properties: table, subelement: table): instan
         else
             -- if the property name is a property of the element, set the value
             success, errorMessage = pcall(function()
-                newElement[propertyName] = propertyValue
+                CreateElement[propertyName] = propertyValue
             end)
             assert(success, "Rovis Error: Unable to set property value (" .. tostring(propertyValue) .. ") for property name (" .. tostring(propertyName) .. "). Error Message: " .. tostring(errorMessage))
         end
@@ -35,8 +35,8 @@ return function(className: string, properties: table, subelement: table): instan
 
     -- add subelements
     for _, subelementInstance in pairs(subelement or {}) do
-        subelementInstance.Parent = newElement
+        subelementInstance.Parent = CreateElement
     end
 
-    return newElement
+    return CreateElement
 end
