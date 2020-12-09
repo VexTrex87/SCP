@@ -31,7 +31,7 @@ function module.show(gunName)
 	local newCrosshair = getCrosshair(gunName)
 	newCrosshair.Size = UDim2.new(0, 1, 0, 1)
 	newCrosshair.Visible = true
-	newTween(newCrosshair, configuration.showTweenInfo, {Size = configuration[gunName].UnzoomedPosition})
+	newTween(newCrosshair, configuration.showTweenInfo, {Size = configuration[gunName].UnzoomedSize})
 end
 
 function module.hide(gunName)
@@ -44,7 +44,7 @@ end
 
 function module.zoom(gunName, isZoomed)
 	local newCrosshair = getCrosshair(gunName)
-	local newSize = isZoomed and configuration[gunName].ZoomedPosition or configuration[gunName].UnzoomedPosition
+	local newSize = isZoomed and configuration[gunName].ZoomedSize or configuration[gunName].UnzoomedSize
 	newTween(newCrosshair, configuration.zoomTweenInfo, {Size = newSize})
 end
 

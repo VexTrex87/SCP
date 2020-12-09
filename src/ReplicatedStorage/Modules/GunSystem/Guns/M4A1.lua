@@ -16,6 +16,7 @@ local Assets = require(modules.Assets)
 local Configuration = require(modules.GunSystem.Configuration[gunName])
 local ThirdPersonCamera = require(modules.ThirdPersonCamera)
 local GunGui = require(modules.GunSystem.GunInfoGUI)
+local Crosshair = require(modules.GunSystem.GunCrosshair)
 
 -- libraries
 local coreModules = modules.Core
@@ -66,11 +67,16 @@ function module.new(tool)
                 activeCameraSettingsChanged = nil,
                 inputBegan = nil,
                 inputEnded = nil,
+                mouseMove = nil,
                 stepped = nil,
                 damageIndicatorFired = nil,
                 stateChanged = nil,
                 ammoChanged = nil,
             },
+            crosshair = {
+                currentTarget = nil,
+                currentTargetType = nil,
+            }
         }
     }, module)
 
@@ -87,11 +93,11 @@ function module:onToolEquipped(playerMouse)
     ThirdPersonCamera:SetCharacterAlignment(true)
 
     self.temp.mouse = playerMouse
-    self:updateMouseIcon()
     self.animations.hold:Play()
     self.remotes.ChangeState:FireServer("EQUIP")
 
     -- update GUI
+    Crosshair.show(gunName)
     GunGui.show({
         gunName = Configuration.gun.name,
         fireMode = self.values.fireMode.Value,
@@ -119,6 +125,7 @@ function module:onToolUnequipped()
     self.animations.aim:Stop()
     self.animations.reload:Stop()
 
+    Crosshair.hide(gunName)
     GunGui.hide()
 end
 
@@ -158,9 +165,11 @@ function module:onActiveCameraSettingsChanged(newCameraSettings: String)
     if newCameraSettings == "DefaultShoulder" then
         self.animations.aim:Stop()
         self.animations.hold:Play()
+        Crosshair.zoom(gunName, false)
         self.remotes.ChangeState:FireServer("AIM_OUT")
     elseif newCameraSettings == "ZoomedShoulder" then
         self.animations.aim:Play()
+        Crosshair.zoom(gunName, true)
         self.remotes.ChangeState:FireServer("AIM_IN")
     end
 end
@@ -207,6 +216,30 @@ function module:stateChanged(newState)
     end
 end
 
+function module:onMouseMove()
+    local target = self.temp.mouse.Target
+    if not target then
+        return
+    end
+    
+    local targetAncestor = target:FindFirstAncestor("Friendly") or target:FindFirstAncestor("Enemy")
+    if not targetAncestor then
+        if targetAncestor ~= self.temp.crosshair.currentTarget and self.temp.crosshair.currentTargetType ~= "Neutral" then
+            self.temp.crosshair.currentTarget = targetAncestor
+            self.temp.crosshair.currentTargetType = "Neutral"
+            Crosshair.updateTargetType(gunName, "Neutral")
+        end
+    elseif targetAncestor.Name == "Friendly" and targetAncestor ~= self.temp.crosshair.currentTarget and self.temp.crosshair.currentTargetType ~= "Friendly" then
+        self.temp.crosshair.currentTarget = targetAncestor
+        self.temp.crosshair.currentTargetType = "Friendly"
+        Crosshair.updateTargetType(gunName, "Friendly")
+    elseif targetAncestor.Name == "Enemy" and targetAncestor ~= self.temp.crosshair.currentTarget and self.temp.crosshair.currentTargetType ~= "Enemy" then
+        self.temp.crosshair.currentTarget = targetAncestor
+        self.temp.crosshair.currentTargetType = "Enemy"
+        Crosshair.updateTargetType(gunName, "Enemy")
+    end
+end
+
 -- indirect
 
 function module:initEvents()
@@ -225,6 +258,10 @@ end
 
 function module:initEquipEvents()
     disconnectConnections(self.temp.connections)
+
+    self.temp.connections.mouseMove = self.temp.mouse.Move:Connect(function()
+        self:onMouseMove()
+    end)
 
     self.temp.connections.stateChanged = self.stateChangedEvent.Event:Connect(function(...)
         self:stateChanged(...)
@@ -299,12 +336,6 @@ function module:shoot()
             self.sounds.jam:Play()
         end
     end
-end
-
-function module:updateMouseIcon()
-	if self.temp.mouse and not self.tool.Parent:IsA("Backpack") then
-		self.temp.mouse.Icon = Configuration.mouseIcon
-	end
 end
 
 return module
