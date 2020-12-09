@@ -3,6 +3,7 @@
 -- // VARIABLES \\ --
 
 local ServerStorage = game:GetService("ServerStorage")
+local Players = game:GetService("Players")
 
 local modules = ServerStorage.Modules
 local newThread = require(ServerStorage.Modules.Core.newThread)
@@ -14,7 +15,7 @@ local npcHandler = require(modules.NPCHandler)
 
 -- // EVENTS \\ --
 
-game.Players.PlayerAdded:Connect(function(player)
+Players.PlayerAdded:Connect(function(player)
     player.CharacterAdded:Connect(createAnimator)
     player.CharacterAppearanceLoaded:Connect(overrideAnimations)
 end)

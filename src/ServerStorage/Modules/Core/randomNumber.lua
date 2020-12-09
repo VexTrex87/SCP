@@ -1,6 +1,6 @@
-return function(min, max, multiplier)
-    if not multiplier then
-        multiplier = 1
-    end
-    return math.random(min * 10 ^ multiplier, max * 10 ^ multiplier) / 10 ^ multiplier
+return function(n, Places)
+	if not Places then
+		return math.floor(n + 0.5)
+	end
+	return math.floor((n * 10 ^ Places) + 0.5) / 10 ^ Places
 end

@@ -1,4 +1,4 @@
 return function(func,...)
-	local a = coroutine.wrap(func)
-	a(...)
+	local newThread = coroutine.wrap(func)
+	newThread(...)
 end

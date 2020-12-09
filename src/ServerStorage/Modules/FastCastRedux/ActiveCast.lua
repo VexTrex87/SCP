@@ -145,13 +145,22 @@ local function CloneCastParams(params: RaycastParams): RaycastParams
 end
 
 local function SendRayHit(cast: ActiveCast, resultOfCast: RaycastResult, segmentVelocity: Vector3, cosmeticBulletObject: Instance?, sender: Instance)
-	--cast.RayHit:Fire(cast, resultOfCast, segmentVelocity, cosmeticBulletObject)
-	cast.Caster.RayHit:Fire(cast, resultOfCast, segmentVelocity, cosmeticBulletObject, sender)
+	cast.Caster.RayHit:Fire({
+		cast = cast, 
+		raycastResult = resultOfCast, 
+		segmentVelocity = segmentVelocity, 
+		cosmeticBulletObject = cosmeticBulletObject, 
+		sender = sender
+	})
 end
 
 local function SendRayPierced(cast: ActiveCast, resultOfCast: RaycastResult, segmentVelocity: Vector3, cosmeticBulletObject: Instance?)
-	--cast.RayPierced:Fire(cast, resultOfCast, segmentVelocity, cosmeticBulletObject)
-	cast.Caster.RayPierced:Fire(cast, resultOfCast, segmentVelocity, cosmeticBulletObject)
+	cast.Caster.RayPierced:Fire({
+		cast = cast, 
+		resultOfCast = resultOfCast, 
+		segmentVelocity = segmentVelocity, 
+		cosmeticBulletObject = cosmeticBulletObject}
+	)
 end
 
 local function SendLengthChanged(cast: ActiveCast, lastPoint: Vector3, rayDir: Vector3, rayDisplacement: number, segmentVelocity: Vector3, cosmeticBulletObject: Instance?)

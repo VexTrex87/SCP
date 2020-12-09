@@ -13,6 +13,7 @@ return function()
                 local module = script:FindFirstChild(tag)
                 if module then
                     require(module).new(tool)
+                    -- break
                 end
             end
         end

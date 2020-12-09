@@ -3,28 +3,30 @@ module.__index = module
 
 -- // VARIABLES \\ -
 
--- constants
-local RNG = Random.new()
-local TAU = math.pi * 2	
-
 -- services
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
-local Debris = game:GetService("Debris")
 
 -- modules
+local modules = ServerStorage.Modules
+local fastCast = require(modules.FastCastRedux)
+local partCache = require(modules.PartCache)
 local Settings = require(ReplicatedStorage.Modules.GunSystem.Settings[script.Name])
-local fastCast = require(script.Parent.Parent.FastCastRedux)
-local partCache = require(script.Parent.Parent.PartCache)
+
+local effectsModules = modules.Effects
+local playSmoke = require(effectsModules.smoke)
+local playLight = require(effectsModules.light)
+local playSound = require(effectsModules.sound)
+local playBulletHit = require(effectsModules.bulletHit)
 
 -- libraries
-local newThread = require(ServerStorage.Modules.Core.newThread)
-local playSound = require(ServerStorage.Modules.Core.playSound)
+local coreModules = modules.Core
+local newThread = require(coreModules.newThread)
+local getCharacterFromHitPart = require(coreModules.getCharacterFromHitPart)
+local disconnectConnections = require(coreModules.disconnectConnections)
 
 -- objects
-local cosmeticBulletsFolder = workspace:FindFirstChild("CosmeticBulletsFolder") or Instance.new("Folder")
-cosmeticBulletsFolder.Name = "CosmeticBulletsFolder"
-cosmeticBulletsFolder.Parent = workspace
+local debrisHolder = workspace.Debris
 
 -- // FUNCTIONS \\ --
 
@@ -61,71 +63,25 @@ function module.new(tool)
         temp = {
             timeOfRecentFire = os.clock(),
             canFire = true,
+            connections = {
+                onRayHit = nil,
+                onLengthChanged = nil,
+                onCastTerminating = nil,
+            }
         }
     }, module)
-
-    -- create bullet
-    self.fastCast.cosmeticBullet = Instance.new("Part")
-	for propertyName, propertyValue in pairs(Settings.bullet.properties) do
-		self.fastCast.cosmeticBullet[propertyName] = propertyValue
-    end 
     
-    -- new raycast paras
-	self.fastCast.castParams = RaycastParams.new()
-	for propertyName, propertyValue in pairs(Settings.raycastParas) do
-		self.fastCast.castParams[propertyName] = propertyValue
-    end
-
-	-- data packets
-	self.fastCast.castBehavior = fastCast.newBehavior()
-	self.fastCast.castBehavior.RaycastParams = self.fastCast.castParams
-	self.fastCast.castBehavior.MaxDistance = Settings.bullet.bulletMaxDist
-
-	-- part cache
-	local cosmeticPartProvider = partCache.new(self.fastCast.cosmeticBullet, 100, cosmeticBulletsFolder)
-	self.fastCast.castBehavior.CosmeticBulletProvider = cosmeticPartProvider
-	self.fastCast.castBehavior.CosmeticBulletContainer = cosmeticPartProvider
-	self.fastCast.castBehavior.Acceleration = Settings.bullet.bulletGravity
-	self.fastCast.castBehavior.AutoIgnoreContainer = false
-    
-    -- set ammo
-    self.values.ammo.Value = Settings.gun.maxAmmo
-
-	-- events
-	
-	self.fastCast.caster.RayHit:Connect(function(...)
-		self:onRayHit(...)
-	end)
-	
-	self.fastCast.caster.LengthChanged:Connect(function(...)
-		self:onRayUpdated(...)
-	end)
-	
-	self.fastCast.caster.CastTerminating:Connect(function(...)
-		self:onRayTerminated(...)
-	end)
-
-    self.remotes.ChangeState.OnServerEvent:Connect(function(...)
-        self:onChangeStateFired(...)
-    end)
-
-    self.remotes.Shoot.OnServerInvoke = function(...)
-        return self:shoot(...)
-    end
-
-	self.remotes.ChangeFireMode.OnServerInvoke = function(...)
-		return self:onChangeFireMode(...)
-	end
-
+    self:setDefaults()
+    self:initEvents()
 end
 
 -- fast cast events
 
-function module:onRayHit(cast, raycastResult, segmentVelocity, cosmeticBulletObject, sender)
+function module:onRayHit(info)
     local damageType, damageAmount
-    local hitPart = raycastResult.Instance
-    local hitPoint = raycastResult.Position
-    local normal = raycastResult.Normal
+    local hitPart = info.raycastResult.Instance
+    local hitPoint = info.raycastResult.Position
+    local normal = info.raycastResult.Normal
     
     -- check if ray hit a part
     if not hitPart then
@@ -133,10 +89,16 @@ function module:onRayHit(cast, raycastResult, segmentVelocity, cosmeticBulletObj
     end
 
     -- play hit effects
-    self:playHitFX(hitPart, hitPoint, normal)
+    newThread(
+        playBulletHit, 
+        self.effects.impactParticle, 
+        hitPart, 
+        CFrame.new(hitPoint, hitPoint + normal), 
+        Settings.effects.impactParticleDuration
+    )
 
     -- check if ray hit a character
-    local character = self:getCharacterFromHitPart(hitPart) or hitPart.Parent:FindFirstChildWhichIsA("Humanoid") and hitPart.Parent
+    local character = getCharacterFromHitPart(hitPart) or hitPart.Parent:FindFirstChildWhichIsA("Humanoid") and hitPart.Parent
     if not character then
         return
     end
@@ -159,26 +121,32 @@ function module:onRayHit(cast, raycastResult, segmentVelocity, cosmeticBulletObj
             damageAmount = damageInfo.amount
         end
     end
-    humanoid:TakeDamage(damageAmount)
 
-    -- damage indicator
-    self.remotes.DamageIndicator:FireClient(sender, character, damageType, damageAmount)
+    -- deal damage & show damage dealt
+    if damageType and damageAmount then
+        humanoid:TakeDamage(damageAmount)
+        self.remotes.DamageIndicator:FireClient(info.sender, character, damageType, damageAmount)
+    end
 end
 
-function module:onRayUpdated(cast, segmentOrigin, segmentDirection, length, segmentVelocity, cosmeticBulletObject)
+function module:onRayUpdated(info)
     -- check bullet still exists
-	if not cosmeticBulletObject then 
+	if not info.cosmeticBulletObject then 
 		return 
 	end
 
 	-- adjust bullet size
-	local bulletVelocity = (math.abs(segmentVelocity.X) + math.abs(segmentVelocity.Y) + math.abs(segmentVelocity.Z))
-	cosmeticBulletObject.Size = Vector3.new(cosmeticBulletObject.Size.X, cosmeticBulletObject.Size.Y, bulletVelocity / Settings.bullet.bulletLengthMultiplier)
+	local bulletVelocity = (math.abs(info.segmentVelocity.X) + math.abs(info.segmentVelocity.Y) + math.abs(info.segmentVelocity.Z))
+	info.cosmeticBulletObject.Size = Vector3.new(
+        info.cosmeticBulletObject.Size.X, 
+        info.cosmeticBulletObject.Size.Y, 
+        bulletVelocity / Settings.bullet.bulletLengthMultiplier
+    )
 
 	-- adjust bullet pos
-	local bulletLength = cosmeticBulletObject.Size.Z / 2
-	local baseCFrame = CFrame.new(segmentOrigin, segmentOrigin + segmentDirection)
-	cosmeticBulletObject.CFrame = baseCFrame * CFrame.new(0, 0, -(length - bulletLength))
+	local bulletLength = info.cosmeticBulletObject.Size.Z / 2
+	local baseCFrame = CFrame.new(info.segmentOrigin, info.segmentOrigin + info.segmentDirection)
+	info.cosmeticBulletObject.CFrame = baseCFrame * CFrame.new(0, 0, -(info.length - bulletLength))
 end
 
 function module:onRayTerminated(cast)
@@ -203,6 +171,7 @@ function module:onChangeStateFired(player, newState)
         player:Kick("Attempted to fire " .. self.owner.Name .. "'s remote.")
     end
 
+    -- run states
     if newState == "EQUIP" or newState == "AIM_IN" then
         newThread(playSound, self.sounds.equip, self.handle)
         self.handle.Equip:Play()
@@ -248,17 +217,24 @@ function module:shoot(player, mousePoint)
 	self.temp.canFire = true
 end
 
-function module:onChangeFireMode()
+function module:onChangeFireMode(player)
+    -- check if person who fired remote is the gun owner
+    if player ~= self.owner then
+        player:Kick("Attempted to fire " .. self.owner.Name .. "'s remote.")
+    end
+
 	local fireModes = Settings.gun.fireMode
 	local oldFireModeIndex = table.find(fireModes, self.values.fireMode.Value)
 	local newFireMode
 
+    -- get next firemode
 	if oldFireModeIndex == #fireModes and oldFireModeIndex ~= 1 then
 		newFireMode = fireModes[1]
 	elseif oldFireModeIndex < #fireModes then
 		newFireMode = fireModes[oldFireModeIndex + 1]
     end
     
+    -- change firemode
 	if newFireMode then
 		self.values.fireMode.Value = newFireMode
 		return newFireMode
@@ -267,10 +243,69 @@ end
 
 -- indirect
 
+function module:setDefaults()
+    -- create bullet
+    self.fastCast.cosmeticBullet = Instance.new("Part")
+	for propertyName, propertyValue in pairs(Settings.bullet.properties) do
+		self.fastCast.cosmeticBullet[propertyName] = propertyValue
+    end 
+    
+    -- new raycast paras
+	self.fastCast.castParams = RaycastParams.new()
+	for propertyName, propertyValue in pairs(Settings.raycastParas) do
+		self.fastCast.castParams[propertyName] = propertyValue
+    end
+
+	-- data packets
+	self.fastCast.castBehavior = fastCast.newBehavior()
+	self.fastCast.castBehavior.RaycastParams = self.fastCast.castParams
+	self.fastCast.castBehavior.MaxDistance = Settings.bullet.bulletMaxDist
+
+	-- part cache
+	local cosmeticPartProvider = partCache.new(self.fastCast.cosmeticBullet, 100, debrisHolder.Bullets)
+	self.fastCast.castBehavior.CosmeticBulletProvider = cosmeticPartProvider
+	self.fastCast.castBehavior.CosmeticBulletContainer = cosmeticPartProvider
+	self.fastCast.castBehavior.Acceleration = Settings.bullet.bulletGravity
+	self.fastCast.castBehavior.AutoIgnoreContainer = false
+    
+    -- set ammo
+    self.values.ammo.Value = Settings.gun.maxAmmo
+end
+
+function module:initEvents()
+	self.temp.connections.onRayHit = self.fastCast.caster.RayHit:Connect(function(...)
+		self:onRayHit(...)
+	end)
+	
+	self.temp.connections.onLengthChanged = self.fastCast.caster.LengthChanged:Connect(function(...)
+		self:onRayUpdated(...)
+	end)
+	
+	self.temp.connections.onCastTerminating = self.fastCast.caster.CastTerminating:Connect(function(...)
+		self:onRayTerminated(...)
+	end)
+
+    self.remotes.ChangeState.OnServerEvent:Connect(function(...)
+        self:onChangeStateFired(...)
+    end)
+
+    self.remotes.Shoot.OnServerInvoke = function(...)
+        return self:shoot(...)
+    end
+
+	self.remotes.ChangeFireMode.OnServerInvoke = function(...)
+		return self:onChangeFireMode(...)
+    end
+    
+    self.tool.AncestryChanged:Connect(function(...)
+        self:onToolAncestryChanged(...)
+    end)
+end
+
 function module:shootBullet(direction, sender)	
 	-- random angles
 	local directionalCF = CFrame.new(Vector3.new(), direction)
-	direction = (directionalCF * CFrame.fromOrientation(0, 0, RNG:NextNumber(0, TAU)) * CFrame.fromOrientation(math.rad(RNG:NextNumber(Settings.bullet.minBulletSpreadAngle, Settings.bullet.maxBulletSpreadAngle)), 0, 0)).LookVector
+	direction = (directionalCF * CFrame.fromOrientation(0, 0, Random.new():NextNumber(0, math.pi * 2	)) * CFrame.fromOrientation(math.rad(Random.new():NextNumber(Settings.bullet.minBulletSpreadAngle, Settings.bullet.maxBulletSpreadAngle)), 0, 0)).LookVector
 
 	-- realistic bullet velocity
 	local root = self.tool.Parent:WaitForChild("HumanoidRootPart", 1)
@@ -282,75 +317,14 @@ function module:shootBullet(direction, sender)
 
     -- play effects
     newThread(playSound, self.sounds.shoot, self.handle)	
-
-    newThread(function()
-		self:playMuzzleFlash()
-	end)
-	
-	newThread(function()
-		self:playMuzzleLight()
-	end)
-	
-	newThread(function()
-		self:playSmoke()
-	end)
+    newThread(playLight, self.effects.muzzleLight, self.handle, Settings.effects.muzzleFlashTime)
+	newThread(playSmoke, self.effects.muzzleSmoke, self.handle, Settings.effects.smokeDuration, Settings.effects.smokeDespawnDelay)
 end
 
-function module:getCharacterFromHitPart(part)
-	local currentInstance = part
-	repeat
-		if currentInstance:FindFirstChildWhichIsA("Humanoid") then
-			return currentInstance
-		else
-			currentInstance = currentInstance.Parent
-		end
-	until currentInstance:IsA("Workspace")
-end
-
--- effects
-
-function module:playSmoke()
-	local newSmoke = self.effects.muzzleSmoke:Clone()
-	newSmoke.Enabled = true
-	newSmoke.Parent = self.handle
-	Debris:AddItem(newSmoke, Settings.effects.smokeDespawnDelay)
-
-	wait(Settings.effects.smokeDuration)
-	newSmoke.Enabled = false
-end
-
-function module:playMuzzleLight()
-	local newMuzzleLight = self.effects.muzzleLight:Clone()
-	newMuzzleLight.Enabled = true
-	newMuzzleLight.Parent = self.handle
-	Debris:AddItem(newMuzzleLight, Settings.effects.muzzleFlashTime)
-end
-
-function module:playMuzzleFlash()
-	local newMuzzleFlash = self.effects.muzzleFlash:Clone()
-	newMuzzleFlash.Enabled = true
-	newMuzzleFlash.Parent = self.handle
-	Debris:AddItem(newMuzzleFlash, Settings.effects.muzzleFlashTime)
-end
-
-function module:playHitFX(part, position, normal)
-	local attachment = Instance.new("Attachment")
-	attachment.CFrame = CFrame.new(position, position + normal)
-	attachment.Parent = workspace.Terrain
-
-	local particle = self.effects.impactParticle:Clone()
-	particle.Color = ColorSequence.new({
-		ColorSequenceKeypoint.new(0, part.Color),
-		ColorSequenceKeypoint.new(0.5, part.Color),
-		ColorSequenceKeypoint.new(1, part.Color)
-	})
-	
-	particle.Parent = attachment
-	Debris:AddItem(attachment, particle.Lifetime.Max)
-
-	particle.Enabled = true
-	wait(Settings.effects.impactParticleDuration)
-	particle.Enabled = false
+function module:onToolAncestryChanged(children, parent)
+    if not children and not parent then
+        disconnectConnections(self.temp.connections)
+    end
 end
 
 return module

@@ -1,5 +1,6 @@
 local NPC_TAG = "NPC"
-local collection = require(game.ServerStorage.Modules.Core.collection)
+local ServerStorage = game:GetService("ServerStorage")
+local collection = require(ServerStorage.Modules.Core.collection)
 
 return function()
     collection(NPC_TAG, function(NPC)

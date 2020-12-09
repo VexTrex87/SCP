@@ -16,11 +16,12 @@ local thirdPersonCamera = require(game.ReplicatedStorage.Modules.ThirdPersonCame
 local gunGui = require(script.Parent.Parent.GunInfoGUI)
 
 -- libraries
-local waitForPath = require(ReplicatedStorage.Modules.Core.waitForPath)
-local disconnectConnections = require(ReplicatedStorage.Modules.Core.disconnectConnections)
-local playSound = require(ReplicatedStorage.Modules.Core.playSound)
-local randomNumber = require(ReplicatedStorage.Modules.Core.randomNumber)
-local newTween = require(ReplicatedStorage.Modules.Core.newTween)
+local coreModules = ReplicatedStorage.Modules.Core
+local waitForPath = require(coreModules.waitForPath)
+local disconnectConnections = require(coreModules.disconnectConnections)
+local playSound = require(coreModules.playSound)
+local randomNumber = require(coreModules.randomNumber)
+local newTween = require(coreModules.newTween)
 
 -- objects
 local player = game.Players.LocalPlayer
