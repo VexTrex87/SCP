@@ -13,7 +13,7 @@ local playerGui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 -- // FUNCTIONS \\ --
 
 function module.create(info)
-	local GUI = createScreenGui(info)
+	local GUI = createScreenGui()
 	GUI.Parent = playerGui
 end
 

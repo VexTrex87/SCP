@@ -4,6 +4,7 @@ return {
         name = "UMP45",
         fireRate = 600, -- rounds per minute
         maxAmmo = 26,
+        reloadDuration = 5,
         damageTypes = {
             head = {
                 partNames = {"Head"},

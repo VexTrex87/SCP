@@ -49,9 +49,6 @@ local CF_REALLY_FAR_AWAY = CFrame.new(0, 10e8, 0)
 -- Format params: methodName, ctorName
 local ERR_NOT_INSTANCE = "Cannot statically invoke method '%s' - It is an instance method. Call it on an instance of this class created via %s"
 
--- Format params: paramName, expectedType, actualType
-local ERR_INVALID_TYPE = "Invalid type for parameter '%s' (Expected %s, got %s)"
-
 -----------------------------------------------------------
 ------------------------ UTILITIES ------------------------
 -----------------------------------------------------------
@@ -117,7 +114,7 @@ function PartCacheStatic:GetPart(): BasePart
 	
 	if #self.Open == 0 then
 		warn("No parts available in the cache! Creating [" .. self.ExpansionSize .. "] new part instance(s) - this amount can be edited by changing the ExpansionSize property of the PartCache instance... (This cache now contains a grand total of " .. tostring(#self.Open + #self.InUse + self.ExpansionSize) .. " parts.)")
-		for i = 1, self.ExpansionSize, 1 do
+		for _ = 1, self.ExpansionSize, 1 do
 			table.insert(self.Open, MakeFromTemplate(self.Template, self.CurrentCacheParent))
 		end
 	end
@@ -163,7 +160,7 @@ function PartCacheStatic:Expand(numParts: number): ()
 		numParts = self.ExpansionSize
 	end
 	
-	for i = 1, numParts do
+	for _ = 1, numParts do
 		table.insert(self.Open, MakeFromTemplate(self.Template, self.CurrentCacheParent))
 	end
 end

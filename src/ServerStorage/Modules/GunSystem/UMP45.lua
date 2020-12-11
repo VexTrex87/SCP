@@ -168,7 +168,7 @@ end
 function module:onChangeStateFired(player, newState)
     -- check if person who fired remote is the gun owner
     if player ~= self.owner then
-        player:Kick("Attempted to fire " .. self.owner.Name .. "'s remote.")
+        player:Kick("It looks like you tried to control " .. self.owner.Name .. "'s gun. (Attempted to fire " .. self.owner.Name .. "'s remote.)")
     end
 
     -- run states
@@ -177,20 +177,23 @@ function module:onChangeStateFired(player, newState)
         self.handle.Equip:Play()
     elseif newState == "UNEQUIP" or newState == "AIM_OUT" then
         newThread(playSound, self.sounds.unequip, self.handle)
-    elseif newState == "RELOAD" then
+    elseif newState == "RELOAD" and self.temp.canFire then
+        self.temp.canFire = false
         newThread(playSound, self.sounds.reload, self.handle)
+        wait(Configuration.gun.reloadDuration)
         self.values.ammo.Value = Configuration.gun.maxAmmo
+        self.temp.canFire = true
     end
 end
 
 function module:shoot(player, mousePoint)
     -- check if person who fired remote is the gun owner
     if player ~= self.owner then
-        player:Kick("Attempted to fire " .. self.owner.Name .. "'s remote.")
+        player:Kick("It looks like you tried to shoot " .. self.owner.Name .. "'s gun. (Attempted to fire " .. self.owner.Name .. "'s remote.)")
     end
 
     -- firerate debounce
-    if self.temp.isMouseDown and os.clock() - self.temp.timeOfRecentFire < 60 / Configuration.fireRate then
+    if not self.temp.canFire or self.temp.isMouseDown and os.clock() - self.temp.timeOfRecentFire < 60 / Configuration.fireRate then
 		return
     end
     self.temp.timeOfRecentFire = os.clock()
@@ -200,6 +203,7 @@ function module:shoot(player, mousePoint)
         self.temp.canFire = true
         return
     end	
+
     self.temp.canFire = false
 
     -- check ammo
@@ -212,15 +216,17 @@ function module:shoot(player, mousePoint)
     local mouseDirection = (mousePoint - self.handle.GunFirePoint.WorldPosition).Unit
     self.fastCast.castParams.FilterDescendantsInstances = {player.Character}
 	self:shootBullet(mouseDirection, player)
-
-	-- end debounce
 	self.temp.canFire = true
 end
 
 function module:onChangeFireMode(player)
     -- check if person who fired remote is the gun owner
     if player ~= self.owner then
-        player:Kick("Attempted to fire " .. self.owner.Name .. "'s remote.")
+        player:Kick("It looks like you tried to change the fire mode of " .. self.owner.Name .. "'s gun. (Attempted to fire " .. self.owner.Name .. "'s remote.)")
+    end
+
+    if not self.temp.canFire then
+        return
     end
 
 	local fireModes = Configuration.gun.fireMode

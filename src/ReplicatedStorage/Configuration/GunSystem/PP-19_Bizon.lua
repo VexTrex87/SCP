@@ -4,6 +4,7 @@ return {
         name = "PP-19 Bizon",
         fireRate = 700, -- rounds per minute
         maxAmmo = 54,
+        reloadDuration = 6.5,
         damageTypes = {
             head = {
                 partNames = {"Head"},

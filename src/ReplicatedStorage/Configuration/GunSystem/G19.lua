@@ -4,6 +4,7 @@ return {
         name = "G19",
         fireRate = 780, -- rounds per minute
         maxAmmo = 18,
+        reloadDuration = 4.5,
         damageTypes = {
             head = {
                 partNames = {"Head"},

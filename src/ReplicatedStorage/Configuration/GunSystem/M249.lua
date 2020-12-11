@@ -4,6 +4,7 @@ return {
         name = "M249",
         fireRate = 800, -- rounds per minute
         maxAmmo = 100,
+        reloadDuration = 10,
         damageTypes = {
             head = {
                 partNames = {"Head"},

@@ -4,6 +4,7 @@ return {
         name = "Desert Eagle",
         fireRate = 400, -- rounds per minute
         maxAmmo = 9,
+        reloadDuration = 2.5,
         damageTypes = {
             head = {
                 partNames = {"Head"},
