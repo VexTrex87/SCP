@@ -3,5 +3,5 @@ name = "Assets"
 [[inputs]]
 glob = "assets/**/*.png" # location & file type of assets
 codegen = true
-codegen-path = "src/ReplicatedStorage/Modules/Assets.lua" # location of modules holding loaded assets
+codegen-path = "src/ReplicatedStorage/Configuration/Images.lua" # location of modules holding loaded assets
 codegen-base-path = "assets"

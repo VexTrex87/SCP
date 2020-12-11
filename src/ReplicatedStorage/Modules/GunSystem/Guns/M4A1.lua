@@ -12,8 +12,7 @@ local Debris = game:GetService("Debris")
 -- modules
 local gunName = script.Name
 local modules = ReplicatedStorage.Modules
-local Assets = require(modules.Assets)
-local Configuration = require(modules.GunSystem.Configuration[gunName])
+local Configuration = require(ReplicatedStorage.Configuration.GunSystem[gunName])
 local ThirdPersonCamera = require(modules.ThirdPersonCamera)
 local GunGui = require(modules.GunSystem.GunInfoGUI)
 local Crosshair = require(modules.GunSystem.GunCrosshair)
@@ -100,10 +99,10 @@ function module:onToolEquipped(playerMouse)
     Crosshair.show(gunName)
     GunGui.show({
         gunName = Configuration.gun.name,
+        gunIdentifier = script.Name,
         fireMode = self.values.fireMode.Value,
         currentAmmo = self.values.ammo.Value,
         maxAmmo = Configuration.gun.maxAmmo,
-        gunIcon = Assets[string.lower(gunName)],
     })
 
     self:initEquipEvents()
@@ -126,7 +125,13 @@ function module:onToolUnequipped()
     self.animations.reload:Stop()
 
     Crosshair.hide(gunName)
-    GunGui.hide()
+        GunGui.hide({
+        gunName = Configuration.gun.name,
+        gunIdentifier = script.Name,
+        fireMode = self.values.fireMode.Value,
+        currentAmmo = self.values.ammo.Value,
+        maxAmmo = Configuration.gun.maxAmmo,
+    })
 end
 
 function module:onInputBegan(input, gameProcessed)
@@ -270,10 +275,10 @@ function module:initEquipEvents()
     self.temp.connections.ammoChanged = self.values.ammo.Changed:Connect(function()
         GunGui.update({
             gunName = Configuration.gun.name,
+            gunIdentifier = script.Name,
             fireMode = self.values.fireMode.Value,
             currentAmmo = self.values.ammo.Value,
             maxAmmo = Configuration.gun.maxAmmo,
-            gunIcon = Assets[string.lower(gunName)],
         })
     end)
 
@@ -302,10 +307,10 @@ function module:changeFireMode()
     if newFireMode and newFireMode ~= oldFireMode then
         GunGui.update({
             gunName = Configuration.gun.name,
+            gunIdentifier = script.Name,
             fireMode = self.values.fireMode.Value,
             currentAmmo = self.values.ammo.Value,
             maxAmmo = Configuration.gun.maxAmmo,
-            gunIcon = Assets[string.lower(gunName)],
         })
         self:initEvents()
     end

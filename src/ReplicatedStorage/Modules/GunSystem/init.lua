@@ -7,7 +7,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local CollectionService = game:GetService("CollectionService")
 
 -- modules
-local Configuration = require(ReplicatedStorage.Modules.GunSystem.Configuration.Global)
+local Configuration = require(ReplicatedStorage.Configuration.GunSystem.Global)
 local collection = require(ReplicatedStorage.Modules.Core.Collection)
 local gunGui = require(game.ReplicatedStorage.Modules.GunSystem.GunInfoGUI)
 local crosshair = require(game.ReplicatedStorage.Modules.GunSystem.GunCrosshair)

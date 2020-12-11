@@ -11,7 +11,7 @@ local ServerStorage = game:GetService("ServerStorage")
 local modules = ServerStorage.Modules
 local fastCast = require(modules.FastCastRedux)
 local partCache = require(modules.PartCache)
-local Configuration = require(ReplicatedStorage.Modules.GunSystem.Configuration[script.Name])
+local Configuration = require(ReplicatedStorage.Configuration.GunSystem[script.Name])
 
 local effectsModules = modules.Effects
 local playSmoke = require(effectsModules.Smoke)

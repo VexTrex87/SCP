@@ -4,23 +4,21 @@ module.__index = module
 -- // VARIABLES \\ --
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
+local Images = require(ReplicatedStorage.Configuration.Images)
 local createScreenGui = require(ReplicatedStorage.GuiElements.GunSystem.GunInfo.ScreenGui)
-local configuration = require(ReplicatedStorage.Modules.GunSystem.Configuration.Global).gunInfo
-
 local newTween = require(game.ReplicatedStorage.Modules.Core.NewTween)
 local newThread = require(game.ReplicatedStorage.Modules.Core.NewThread)
-
 local playerGui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
 -- // FUNCTIONS \\ --
 
-function module.create()
-	local GUI = createScreenGui()
+function module.create(info)
+	local GUI = createScreenGui(info)
 	GUI.Parent = playerGui
 end
 
 function module.update(info)
+	local configuration = require(ReplicatedStorage.Configuration.GunSystem[info.gunIdentifier]).UI.gunInfo
 	local GUI = playerGui:WaitForChild("GunInfo")
 
 	newThread(function()
@@ -36,7 +34,7 @@ function module.update(info)
 	end)
 
 	newThread(function()
-		local newIcon = info.gunIcon
+		local newIcon = Images[info.gunIdentifier:lower()]
 		local element = GUI.Frame.GunIcon
 		if element.Image ~= newIcon then
 			element.Image = newIcon
@@ -59,12 +57,14 @@ function module.update(info)
 end
 
 function module.show(info)
+	local configuration = require(ReplicatedStorage.Configuration.GunSystem[info.gunIdentifier]).UI.gunInfo
 	local GUI = playerGui:WaitForChild("GunInfo")
 	module.update(info)
 	GUI.Frame:TweenPosition(configuration.shownPosition, table.unpack(configuration.moveTweenInfo))
 end
 
-function module.hide()
+function module.hide(info)
+	local configuration = require(ReplicatedStorage.Configuration.GunSystem[info.gunIdentifier]).UI.gunInfo
 	local GUI = playerGui:WaitForChild("GunInfo")
 	GUI.Frame:TweenPosition(configuration.hiddenPosition, table.unpack(configuration.moveTweenInfo))
 end

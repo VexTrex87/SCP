@@ -1,7 +1,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local CreateElement = require(ReplicatedStorage.Modules.Core.CreateElement)
 
-local Configuration = require(ReplicatedStorage.Modules.GunSystem.Configuration.Global).gunCrosshair[script.Parent.Name]
+local Configuration = require(ReplicatedStorage.Configuration.GunSystem[script.Parent.Name])
 local createUICorner = require(ReplicatedStorage.GuiElements.UICorner)
 
 return function(): instance

@@ -1,14 +1,14 @@
-local NPC_TAG = "NPC"
-local RESPAWN_DELAY = 2
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
+local Configuration = require(ReplicatedStorage.Configuration.NPCHandler)
 local collection = require(ServerStorage.Modules.Core.Collection)
 
 return function()
-    collection(NPC_TAG, function(NPC)
+    collection(Configuration.tag, function(NPC)
         local newNPC = NPC:Clone()
         NPC.Humanoid.Died:Connect(function()
             NPC:Destroy()
-            wait(RESPAWN_DELAY)
+            wait(Configuration.respawnDelay)
             newNPC.Parent = workspace.Debris.NPC
         end)
     end)

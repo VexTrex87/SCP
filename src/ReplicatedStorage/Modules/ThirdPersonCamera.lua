@@ -2,14 +2,11 @@ local CLASS = {}
 
 --// VARIABLES \\ --
 
--- constants
 local UPDATE_UNIQUE_KEY = "OTS_CAMERA_SYSTEM_UPDATE"
-
--- services
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
-
--- objects
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Configuration = require(ReplicatedStorage.Configuration.Camera)
 local player = game.Players.LocalPlayer
 
 -- // FUNCTIONS \\ --
@@ -63,23 +60,7 @@ function CLASS.new()
 			----
 			
 			--// Camera Settings //--
-			CameraSettings = {
-				
-				DefaultShoulder = {
-					FieldOfView = 80,
-					Offset = Vector3.new(2, 2.5, 8),
-					Sensitivity = 8,
-					LerpSpeed = 0.5
-				},
-				
-				ZoomedShoulder = {
-					FieldOfView = 70,
-					Offset = Vector3.new(2.5, 1.7, 2),
-					Sensitivity = 8,
-					LerpSpeed = 0.5
-				}
-				
-			}
+			CameraSettings = Configuration
 			----
 			
 		},
