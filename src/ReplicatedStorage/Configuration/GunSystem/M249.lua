@@ -98,5 +98,8 @@ return {
         reload = Enum.KeyCode.R,
         changeFireMode = Enum.KeyCode.V,
         shoot = Enum.UserInputType.MouseButton1,
+        aim = Enum.UserInputType.MouseButton2,
+        leanLeft = Enum.KeyCode.Q,
+        leanRight = Enum.KeyCode.E,
     },
 }

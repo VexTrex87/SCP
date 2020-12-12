@@ -1,15 +1,14 @@
 local CLASS = {}
 
---// VARIABLES \\ --
-
 local UPDATE_UNIQUE_KEY = "OTS_CAMERA_SYSTEM_UPDATE"
+
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Configuration = require(ReplicatedStorage.Configuration.Camera)
-local player = game.Players.LocalPlayer
 
--- // FUNCTIONS \\ --
+local Configuration = require(ReplicatedStorage.Configuration.Camera)
+
+local player = game.Players.LocalPlayer
 
 function CLASS.new()
 	
@@ -325,31 +324,5 @@ end
 CLASS.__index = CLASS
 
 local singleton = CLASS.new()
-
-UserInputService.InputBegan:Connect(function(inputObject, gameProcessedEvent)
-	if gameProcessedEvent == false and singleton.IsEnabled == true then
-		if inputObject.KeyCode == Enum.KeyCode.Q then
-			singleton:SetShoulderDirection(-1)
-		elseif inputObject.KeyCode == Enum.KeyCode.E then
-			singleton:SetShoulderDirection(1)
-		end
-		if inputObject.UserInputType == Enum.UserInputType.MouseButton2 then
-			if player.Character:FindFirstChildWhichIsA("Tool") then
-				singleton:SetActiveCameraSettings("ZoomedShoulder")
-			end
-		end
-	end
-end)
-
-UserInputService.InputEnded:Connect(function(inputObject, gameProcessedEvent)
-	if gameProcessedEvent == false and singleton.IsEnabled == true then
-		if inputObject.UserInputType == Enum.UserInputType.MouseButton2 then
-			if player.Character:FindFirstChildWhichIsA("Tool") then
-				singleton:SetActiveCameraSettings("DefaultShoulder")
-			end
-		end
-	end
-end)
-
 
 return singleton

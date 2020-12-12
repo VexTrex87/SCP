@@ -4,13 +4,11 @@ local RunService = game:GetService("RunService")
 
 local modules = ReplicatedStorage.Modules
 local disconnectConnections = require(modules.Core.DisconnectConnections)
-local ThirdPersonCamera = require(modules.ThirdPersonCamera)
 
 local components = modules.GunSystem
 local GunInfoGUI = require(components.GunInfoGUI)
 local onMouseMove = require(components.OnMouseMove)
 local onStateChanged = require(components.OnStateChanged)
-local onActiveCameraSettingsChanged = require(components.OnActiveCameraSettingsChanged)
 local onInputBegan = require(components.OnInputBegan)
 local onInputEnded = require(components.OnInputEnded)
 local onStepped = require(components.OnStepped)
@@ -34,10 +32,6 @@ return function(self)
             currentAmmo = self.values.ammo.Value,
             maxAmmo = self.Configuration.gun.maxAmmo,
         })
-    end)
-
-    self.temp.connections.activeCameraSettingsChanged = ThirdPersonCamera.ActiveCameraSettingsChanged:Connect(function(...)
-        onActiveCameraSettingsChanged(self, ...)
     end)
 
     self.temp.connections.inputBegan = UserInputService.InputBegan:Connect(function(...)
