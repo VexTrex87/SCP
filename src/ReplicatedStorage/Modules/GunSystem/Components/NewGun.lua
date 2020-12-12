@@ -4,9 +4,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local waitForPath = require(ReplicatedStorage.Modules.Core.WaitForPath)
 local initEvents = require(ReplicatedStorage.Modules.GunSystem.Components.InitEvents)
 
-local gunName = script.Name
-
-return function(tool)
+return function(tool, gunName)
     local player = Players.LocalPlayer
     local character = player.Character
     local humanoid = character:WaitForChild("Humanoid")

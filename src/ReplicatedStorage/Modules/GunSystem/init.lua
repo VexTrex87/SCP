@@ -7,10 +7,14 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
 
-local GlobalConfiguration = require(ReplicatedStorage.Configuration.GunSystem.Global)
+local gunConfigurations = ReplicatedStorage.Configuration.GunSystem
+local GlobalConfiguration = require(gunConfigurations.Global)
 local collection = require(ReplicatedStorage.Modules.Core.Collection)
-local GunInfoGUI = require(ReplicatedStorage.Modules.GunSystem.Components.GunInfoGUI)
-local Crosshair = require(ReplicatedStorage.Modules.GunSystem.Components.Crosshair)
+
+local components = ReplicatedStorage.Modules.GunSystem.Components
+local GunInfoGUI = require(components.GunInfoGUI)
+local Crosshair = require(components.Crosshair)
+local newGun = require(components.NewGun)
 
 GunInfoGUI.create()
 Crosshair.create()
@@ -23,13 +27,11 @@ return function()
             return
         end
 
-        -- find module
+        -- run controller
         local tags = CollectionService:GetTags(tool)
         for _,tag in pairs(tags) do
-            local controller = script.Controllers:FindFirstChild(tag)
-            if controller then
-                require(controller)(tool)
-                break
+            if gunConfigurations:FindFirstChild(tag) then
+                newGun(tool, tag)
             end
         end
     end)
