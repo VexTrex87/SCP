@@ -1,5 +1,7 @@
 return {
-    mouseIcon = "rbxassetid://131581677",
+    name = "PP-19 Bizon",
+    tag = "PP-19_Bizon",
+    
     gun = {
         name = "PP-19 Bizon",
         fireRate = 700, -- rounds per minute
@@ -95,5 +97,6 @@ return {
     keybinds = {
         reload = Enum.KeyCode.R,
         changeFireMode = Enum.KeyCode.V,
+        shoot = Enum.UserInputType.MouseButton1,
     },
 }

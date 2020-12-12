@@ -1,7 +1,8 @@
 return {
-    mouseIcon = "rbxassetid://131581677",
+    name = "Desert Eagle",
+    tag = "Desert_Eagle",
+
     gun = {
-        name = "Desert Eagle",
         fireRate = 400, -- rounds per minute
         maxAmmo = 9,
         reloadDuration = 2.5,
@@ -95,5 +96,6 @@ return {
     keybinds = {
         reload = Enum.KeyCode.R,
         changeFireMode = Enum.KeyCode.V,
+        shoot = Enum.UserInputType.MouseButton1,
     },
 }

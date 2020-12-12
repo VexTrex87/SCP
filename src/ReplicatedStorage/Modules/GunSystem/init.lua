@@ -11,7 +11,7 @@ local gunConfigurations = ReplicatedStorage.Configuration.GunSystem
 local GlobalConfiguration = require(gunConfigurations.Global)
 local collection = require(ReplicatedStorage.Modules.Core.Collection)
 
-local components = ReplicatedStorage.Modules.GunSystem.Components
+local components = ReplicatedStorage.Modules.GunSystem
 local GunInfoGUI = require(components.GunInfoGUI)
 local Crosshair = require(components.Crosshair)
 local newGun = require(components.NewGun)

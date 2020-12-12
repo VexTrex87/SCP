@@ -7,7 +7,7 @@ local createAmmo = require(script.Ammo)
 local createGunIcon = require(script.GunIcon)
 local createBorder = require(script.Border)
 
-return function(info)
+return function()
     return createElement("Frame", {
         BackgroundTransparency = 1,
         Name = "Frame",
