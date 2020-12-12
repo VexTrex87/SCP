@@ -17,12 +17,12 @@ return function(self)
     self.remotes.ChangeState:FireServer("UNEQUIP")
 
     -- stop all animations
+    self.animations.aim:Stop()
+    self.animations.reload:Stop()
+    self.animations.hold:Stop()
     if self.animations.runningHold then
         self.animations.runningHold:Stop()
     end
-    self.animations.hold:Stop()
-    self.animations.aim:Stop()
-    self.animations.reload:Stop()
 
     Crosshair.hide(self.Configuration.tag)
     GunInfoGUI.hide({
