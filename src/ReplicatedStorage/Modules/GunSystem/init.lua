@@ -1,47 +1,38 @@
-local module = {}
+--[[
+    Creates the GunGui & Crosshair.
+    Runs a specific gun controller when a tool is added.
+]]
 
--- // VARIABLES \\ --
-
--- services
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local CollectionService = game:GetService("CollectionService")
+local Players = game:GetService("Players")
 
--- modules
-local Configuration = require(ReplicatedStorage.Configuration.GunSystem.Global)
+local gunConfigurations = ReplicatedStorage.Configuration.GunSystem
+local GlobalConfiguration = require(gunConfigurations.Global)
 local collection = require(ReplicatedStorage.Modules.Core.Collection)
-local gunGui = require(game.ReplicatedStorage.Modules.GunSystem.GunInfoGUI)
-local crosshair = require(game.ReplicatedStorage.Modules.GunSystem.GunCrosshair)
 
--- objects
-local player = game.Players.LocalPlayer
+local components = ReplicatedStorage.Modules.GunSystem
+local GunInfoGUI = require(components.GunInfoGUI)
+local Crosshair = require(components.Crosshair)
+local newGun = require(components.NewGun)
 
--- // FUNCTIONS \\ --
+GunInfoGUI.create()
+Crosshair.create()
 
-function init(tool)
-    -- check if tool is in a player's backpack
-    local backpack = player:WaitForChild("Backpack")
-    if not tool:IsDescendantOf(backpack) then
-        return
-    end
-
-    -- find module
-    local tags = CollectionService:GetTags(tool)
-    for _,tag in pairs(tags) do
-        local gunModule = script.Guns:FindFirstChild(tag)
-        if gunModule then
-            require(gunModule).new(tool)
-            break
+return function()
+    collection(GlobalConfiguration.gunTag, function(tool)
+        -- check if tool is in a player's backpack
+        local backpack = Players.LocalPlayer:WaitForChild("Backpack")
+        if not tool:IsDescendantOf(backpack) then
+            return
         end
-    end
+
+        -- run controller
+        local tags = CollectionService:GetTags(tool)
+        for _,tag in pairs(tags) do
+            if gunConfigurations:FindFirstChild(tag) then
+                newGun(tool, tag)
+            end
+        end
+    end)
 end
-
-function module.new()
-    collection(Configuration.gunTag, init)
-end
-
--- // COMPILE \\ --
-
-gunGui.create()
-crosshair.create()
-
-return module

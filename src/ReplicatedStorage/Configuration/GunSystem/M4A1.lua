@@ -1,5 +1,7 @@
 return {
-    mouseIcon = "rbxassetid://131581677",
+    name = "M4A1",
+    tag = "M4A1",
+    
     gun = {
         name = "M4A1",
         fireRate = 900, -- rounds per minute
@@ -95,5 +97,6 @@ return {
     keybinds = {
         reload = Enum.KeyCode.R,
         changeFireMode = Enum.KeyCode.V,
+        shoot = Enum.UserInputType.MouseButton1,
     },
 }
