@@ -1,25 +1,14 @@
 return {
-    name = "M4A1",
-    tag = "M4A1",
-    
+    name = "M249",
+    tag = "M249",
     gun = {
-        name = "M4A1",
         fireRate = 900, -- rounds per minute
-        maxAmmo = 31,
+        maxAmmo = 30,
         reloadDuration = 5,
         damageTypes = {
-            head = {
-                partNames = {"Head"},
-                amount = 35
-            },
-            torso = {
-                partNames = {"UpperTorso", "LowerTorso", "HumanoidRootPart"},
-                amount = 28,
-            },
-            limb = {
-                partNames = "ELSE",
-                amount = 22,
-            }
+            head = {partNames = {"Head"}, amount = 35},
+            torso = {partNames = {"UpperTorso", "LowerTorso", "HumanoidRootPart"}, amount = 28},
+            limb = {partNames = "ELSE", amount = 22, }
         },
         fireMode = {"AUTO"}
     },
@@ -28,7 +17,7 @@ return {
         bulletMaxDist = 165, -- studs
         bulletGravity = Vector3.new(0, -workspace.Gravity, 0),
         bulletLengthMultiplier = 200,
-        minBulletSpreadAngle = 0, -- between 0 and 180, in degrees
+        minBulletSpreadAngle = 1.8, -- between 0 and 180, in degrees
         maxBulletSpreadAngle = 0, -- between 0 and 180, in degrees
         properties = {
             Material = Enum.Material.Neon,
@@ -38,7 +27,6 @@ return {
             Size = Vector3.new(0.05, 0.05, 1)
         },
     },
-
 	UI = {
 		damageIndicator = {
 			head = {
@@ -72,31 +60,31 @@ return {
         },
         crosshair = {
             showTweenInfo = TweenInfo.new(0.3),
-            zoomTweenInfo =TweenInfo.new(0.1),
-            UnzoomedSize = UDim2.new(0, 114, 0, 114),
-            ZoomedSize = UDim2.new(0, 30, 0, 30),
-            NeutralColor = Color3.fromRGB(255, 255, 255),
-            FriendlyColor = Color3.fromRGB(0, 255, 0),
-            EnemyColor = Color3.fromRGB(255, 0, 0)
+            zoomTweenInfo = TweenInfo.new(0.1),
+            unzoomedSize = UDim2.new(0, 114, 0, 114),
+            zoomedSize = UDim2.new(0, 44, 0, 44),
+            neutralColor = Color3.fromRGB(255, 255, 255),
+            friendlyColor = Color3.fromRGB(0, 255, 0),
+            enemyColor = Color3.fromRGB(255, 0, 0)
         }
 	},
-
     effects = {
         muzzleFlashTime = 0.1,
         impactParticleDuration = 0.05,
         smokeDuration = 0.5,
         smokeDespawnDelay = 1.5,
     },
-
     raycastParas = {
 		IgnoreWater = true,
 		FilterType = Enum.RaycastFilterType.Blacklist,
 		FilterDescendantsInstances = {}
     },
-    
     keybinds = {
         reload = Enum.KeyCode.R,
         changeFireMode = Enum.KeyCode.V,
         shoot = Enum.UserInputType.MouseButton1,
+        aim = Enum.UserInputType.MouseButton2,
+        leanLeft = Enum.KeyCode.Q,
+        leanRight = Enum.KeyCode.E,
     },
 }

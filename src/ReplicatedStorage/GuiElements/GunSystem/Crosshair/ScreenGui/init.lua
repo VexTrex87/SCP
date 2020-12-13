@@ -8,6 +8,7 @@ return function(): instance
 	end
 
 	return CreateElement("ScreenGui", {
-		Name = "Crosshair"
+		Name = "Crosshair",
+		IgnoreGuiInset = true
 	}, children)
 end

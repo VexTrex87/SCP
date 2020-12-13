@@ -8,7 +8,7 @@ local disconnectConnections = require(modules.Core.DisconnectConnections)
 local components = modules.GunSystem
 local GunInfoGUI = require(components.GunInfoGUI)
 local onMouseMove = require(components.OnMouseMove)
-local onStateChanged = require(components.OnStateChanged)
+local onMovementStateChanged = require(components.OnMovementStateChanged)
 local onInputBegan = require(components.OnInputBegan)
 local onInputEnded = require(components.OnInputEnded)
 local onStepped = require(components.OnStepped)
@@ -20,8 +20,8 @@ return function(self)
         onMouseMove(self)
     end)
 
-    self.temp.connections.stateChanged = self.stateChangedEvent.Event:Connect(function(...)
-        onStateChanged(self, ...)
+    self.temp.connections.movementStateChanged = self.movementStateChanged.Event:Connect(function(...)
+        onMovementStateChanged(self, ...)
     end)
 
     self.temp.connections.ammoChanged = self.values.ammo.Changed:Connect(function()
@@ -38,11 +38,11 @@ return function(self)
         onInputBegan(self, ...)
     end)
 
+    self.temp.connections.inputEnded = UserInputService.InputEnded:Connect(function(...)
+        onInputEnded(self, ...)
+    end)
+
     if self.values.fireMode.Value == "AUTO" then	
-        self.temp.connections.inputEnded = UserInputService.InputEnded:Connect(function(...)
-            onInputEnded(self, ...)
-        end)
-    
         self.temp.connections.stepped = RunService.Stepped:Connect(function()
             onStepped(self)
         end)

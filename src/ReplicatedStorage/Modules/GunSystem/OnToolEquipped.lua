@@ -10,13 +10,14 @@ local initEquipEvents = require(components.InitEquipEvents)
 
 return function(self, mouse)
     self.temp.states.isEquipped = true
-
-    ThirdPersonCamera:Enable()
-    ThirdPersonCamera:SetCharacterAlignment(true)
-
     self.temp.mouse = mouse
     self.animations.hold:Play()
     self.remotes.ChangeState:FireServer("EQUIP")
+    
+    if not ThirdPersonCamera.IsEnabled then
+        ThirdPersonCamera:Enable()
+        ThirdPersonCamera:SetCharacterAlignment(true)
+    end
 
     Crosshair.show(self.Configuration.tag)
     GunInfoGUI.show({

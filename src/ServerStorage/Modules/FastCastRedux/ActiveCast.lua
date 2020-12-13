@@ -197,7 +197,6 @@ local function SimulateCast(cast: ActiveCast, delta: number)
 	local point = currentTarget
 	local part: Instance? = nil
 	local material = Enum.Material.Air
-	local normal = Vector3.new()
 	
 	if resultOfCast ~= nil then
 		point = resultOfCast.Position

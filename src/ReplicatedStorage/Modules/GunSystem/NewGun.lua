@@ -14,7 +14,7 @@ return function(tool, gunName)
     local self = {
         tool = tool,
         remotes = tool:WaitForChild("Remotes"),
-        stateChangedEvent = ReplicatedStorage.Objects.Remotes.Movement.StateChanged,
+        movementStateChanged = ReplicatedStorage.Objects.Remotes.Movement.StateChanged,
         Configuration = require(ReplicatedStorage.Configuration.GunSystem[gunName]),
         animations = {
             hold = loadAnimation(animator, waitForPath(tool, "Animations.Hold")),
@@ -41,13 +41,12 @@ return function(tool, gunName)
                 currentAnimationState = "WALK"
             },
             connections = {
-                activeCameraSettingsChanged = nil,
                 inputBegan = nil,
                 inputEnded = nil,
                 mouseMove = nil,
                 stepped = nil,
                 damageIndicatorFired = nil,
-                stateChanged = nil,
+                movementStateChanged = nil,
                 ammoChanged = nil,
             },
             crosshair = {

@@ -31,29 +31,28 @@ function module.show(gunTag)
 	local newCrosshair = getCrosshair(gunTag)
 	newCrosshair.Size = UDim2.new(0, 1, 0, 1)
 	newCrosshair.Visible = true
-	newTween(newCrosshair, configuration.showTweenInfo, {Size = configuration.UnzoomedSize})
+	newTween(newCrosshair, configuration.showTweenInfo, {Size = configuration.unzoomedSize})
 end
 
 function module.hide(gunTag)
 	local configuration = require(ReplicatedStorage.Configuration.GunSystem[gunTag]).UI.crosshair
 	local newCrosshair = getCrosshair(gunTag)
-	newTween(newCrosshair, configuration.showTweenInfo, {Size = UDim2.new(0, 1, 0, 1)})
+	newTween(newCrosshair, configuration.showTweenInfo, {Size = UDim2.new(0, 1, 0, 1)}).Completed:Wait()
 	newCrosshair.Visible = false
-	
 	UserInputService.MouseIconEnabled = true
 end
 
 function module.zoom(gunTag, isZoomed)
-	local configuration = require(ReplicatedStorage.Configuration.GunSystem[gunTag]).UI.crosshair
+	local Configuration = require(ReplicatedStorage.Configuration.GunSystem[gunTag]).UI.crosshair
 	local newCrosshair = getCrosshair(gunTag)
-	local newSize = isZoomed and configuration.ZoomedSize or configuration.UnzoomedSize
-	newTween(newCrosshair, configuration.zoomTweenInfo, {Size = newSize})
+	local newSize = isZoomed and Configuration.zoomedSize or Configuration.unzoomedSize
+	newTween(newCrosshair, Configuration.zoomTweenInfo, {Size = newSize})
 end
 
 function module.updateTargetType(gunTag, targetType)
 	local configuration = require(ReplicatedStorage.Configuration.GunSystem[gunTag]).UI.crosshair
 	local newCrosshair = getCrosshair(gunTag)
-	local newColor = configuration[targetType .. "Color"]
+	local newColor = configuration[targetType:lower() .. "Color"]
 	for _,element in pairs(newCrosshair:GetChildren()) do
 		element.BackgroundColor3 = newColor
 	end

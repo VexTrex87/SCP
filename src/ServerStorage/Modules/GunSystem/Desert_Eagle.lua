@@ -22,7 +22,7 @@ local playBulletHit = require(effectsModules.BulletHit)
 -- libraries
 local coreModules = modules.Core
 local newThread = require(coreModules.NewThread)
-local getCharacterFromHitPart = require(coreModules.GetCharacterFromHitPart)
+local getCharacterFromBodyPart = require(coreModules.GetCharacterFromBodyPart)
 local disconnectConnections = require(coreModules.DisconnectConnections)
 
 -- objects
@@ -98,7 +98,7 @@ function module:onRayHit(info)
     )
 
     -- check if ray hit a character
-    local character = getCharacterFromHitPart(hitPart) or hitPart.Parent:FindFirstChildWhichIsA("Humanoid") and hitPart.Parent
+    local character = getCharacterFromBodyPart(hitPart) or hitPart.Parent:FindFirstChildWhichIsA("Humanoid") and hitPart.Parent
     if not character then
         return
     end

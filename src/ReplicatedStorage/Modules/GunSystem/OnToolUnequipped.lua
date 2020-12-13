@@ -11,10 +11,14 @@ return function(self)
     self.temp.states.isEquipped = false
     self.temp.states.isReloading = false
     self.temp.states.isAiming = false
+    self.temp.states.isMouseDown = false
+    self.temp.states.currentAnimationState = "WALK"
 
     disconnectConnections(self.temp.connections)
-    ThirdPersonCamera:Disable()
     self.remotes.ChangeState:FireServer("UNEQUIP")
+    if ThirdPersonCamera.IsEnabled then
+        ThirdPersonCamera:Disable()
+    end
 
     -- stop all animations
     self.animations.aim:Stop()
@@ -24,6 +28,14 @@ return function(self)
         self.animations.runningHold:Stop()
     end
 
+    -- stop all sounds
+    for _,sound in pairs(self.tool.Handle:GetChildren()) do
+        if sound:IsA("Sound") then
+            sound:Destroy()
+        end
+    end
+
+    -- hide GUI
     Crosshair.hide(self.Configuration.tag)
     GunInfoGUI.hide({
         gunName = self.Configuration.name,
