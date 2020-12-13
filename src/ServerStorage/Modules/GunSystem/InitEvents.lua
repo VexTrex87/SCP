@@ -5,8 +5,7 @@ local onRayHit = require(components.OnRayHit)
 local onRayUpdated = require(components.OnRayUpdated)
 local onRayTerminated = require(components.OnRayTerminated)
 local onChangeStateFired = require(components.OnChangeStateFired)
-local shoot = require(components.Shoot)
-local onChangeFireMode = require(components.OnChangeFireMode)
+local onMouseEventFired = require(components.OnMouseEventFired)
 local onToolAncestryChanged = require(components.OnToolAncestryChanged)
 
 return function(self)
@@ -26,12 +25,8 @@ return function(self)
         onChangeStateFired(self, ...)
     end)
 
-    self.remotes.Shoot.OnServerInvoke = function(...)
-        return shoot(self, ...)
-    end
-
-	self.remotes.ChangeFireMode.OnServerInvoke = function(...)
-		return onChangeFireMode(self, ...)
+    self.remotes.MouseEvent.OnServerInvoke = function(...)
+        return onMouseEventFired(self, ...)
     end
     
     self.tool.AncestryChanged:Connect(function(...)

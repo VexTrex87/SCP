@@ -6,7 +6,7 @@ local GunInfoGUI = require(components.GunInfoGUI)
 return function(self)
     local initEvents = require(components.InitEvents)
     local oldFireMode = self.values.fireMode.Value
-    local newFireMode = self.remotes.ChangeFireMode:InvokeServer()
+    local newFireMode = self.remotes.ChangeState:InvokeServer("FIRE_MODE")
     
     if newFireMode and newFireMode ~= oldFireMode then
         GunInfoGUI.update({

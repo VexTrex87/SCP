@@ -12,8 +12,9 @@ return function(effect, hitPart, CFrame, deactivationDelay, despawnDelay)
 		ColorSequenceKeypoint.new(1, hitPart.Color)
 	})
 	particle.Parent = attachment
-	Debris:AddItem(attachment, despawnDelay or particle.Lifetime.Max)
 
+	-- Deactivate particle shortly before despawning so it isn't at max power when despawning
+	Debris:AddItem(attachment, despawnDelay or particle.Lifetime.Max)
 	particle.Enabled = true
 	wait(deactivationDelay)
 	particle.Enabled = false

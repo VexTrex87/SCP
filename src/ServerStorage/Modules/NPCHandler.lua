@@ -1,5 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
+
 local Configuration = require(ReplicatedStorage.Configuration.NPCHandler)
 local collection = require(ServerStorage.Modules.Core.Collection)
 
