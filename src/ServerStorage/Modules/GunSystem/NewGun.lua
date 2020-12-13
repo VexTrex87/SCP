@@ -40,7 +40,6 @@ return function(tool, gunTag)
         temp = {
             timeOfRecentFire = os.clock(),
             canFire = true,
-            isEquipped = false,
             connections = {
                 onRayHit = nil,
                 onLengthChanged = nil,

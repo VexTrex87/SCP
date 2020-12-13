@@ -6,7 +6,6 @@ local playSound = require(core.PlaySound)
 
 return function(self, willAim)
     newThread(playSound, willAim and self.sounds.equip or self.sounds.unequip, self.handle)
-    self.temp.isEquipped = willAim
     if not willAim then
         self.temp.canFire = true
         for _,sound in pairs(self.handle:GetChildren()) do
