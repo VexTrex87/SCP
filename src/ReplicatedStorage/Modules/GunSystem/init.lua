@@ -32,6 +32,7 @@ return function()
         for _,tag in pairs(tags) do
             if gunConfigurations:FindFirstChild(tag) then
                 newGun(tool, tag)
+                break
             end
         end
     end)
