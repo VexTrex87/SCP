@@ -1,10 +1,8 @@
 return function(self, info)
-    -- check bullet still exists
 	if not info.cosmeticBulletObject then 
 		return 
 	end
 
-	-- adjust bullet size
 	local bulletVelocity = (math.abs(info.segmentVelocity.X) + math.abs(info.segmentVelocity.Y) + math.abs(info.segmentVelocity.Z))
 	info.cosmeticBulletObject.Size = Vector3.new(
         info.cosmeticBulletObject.Size.X, 
@@ -12,7 +10,6 @@ return function(self, info)
         bulletVelocity / self.Configuration.bullet.bulletLengthMultiplier
     )
 
-	-- adjust bullet pos
 	local bulletLength = info.cosmeticBulletObject.Size.Z / 2
 	local baseCFrame = CFrame.new(info.segmentOrigin, info.segmentOrigin + info.segmentDirection)
 	info.cosmeticBulletObject.CFrame = baseCFrame * CFrame.new(0, 0, -(info.length - bulletLength))
