@@ -27,7 +27,6 @@ return function(tool, gunTag)
         },
         effects = {
             impactParticle = tool.Handle.ImpactParticle,
-            muzzleFlash = tool.Handle.MuzzleFlash,
             muzzleLight = tool.Handle.GunFirePoint.MuzzleLight,
             muzzleSmoke = tool.Handle.GunFirePoint.Smoke,
         },

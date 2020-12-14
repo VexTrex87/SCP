@@ -1,18 +1,15 @@
 local module = {}
 module.__index = module
 
--- // VARIABLES \\ --
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local Images = require(ReplicatedStorage.Configuration.Images)
+local Images = require(ReplicatedStorage.Configuration.Images).gunIcons
 local newTween = require(game.ReplicatedStorage.Modules.Core.NewTween)
 local newThread = require(game.ReplicatedStorage.Modules.Core.NewThread)
 local createScreenGui = require(ReplicatedStorage.GuiElements.GunSystem.GunInfo.ScreenGui)
 
 local playerGui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-
--- // FUNCTIONS \\ --
 
 function module.create()
 	local GUI = createScreenGui()

@@ -2,9 +2,8 @@ local ServerStorage = game:GetService("ServerStorage")
 
 local modules = ServerStorage.Modules
 local core = modules.Core
-local newThread = require(core.NewThread)
 local getCharacterFromBodyPart = require(core.GetCharacterFromBodyPart)
-local playBulletHit = require(modules.Effects.BulletHit)
+local playEffects = require(ServerStorage.Modules.PlayEffects)
 
 return function(self, info)
     local damageType, damageAmount
@@ -16,7 +15,7 @@ return function(self, info)
         return
     end
 
-    newThread(playBulletHit, self.effects.impactParticle, hitPart, CFrame.new(hitPoint, hitPoint + normal), self.Configuration.effects.impactParticleDuration)
+    playEffects("BulletHit", self.effects.impactParticle, hitPart, CFrame.new(hitPoint, hitPoint + normal), self.Configuration.effects.impactParticleDuration)
 
     local character = getCharacterFromBodyPart(hitPart) or hitPart.Parent:FindFirstChildWhichIsA("Humanoid") and hitPart.Parent
     if not character then

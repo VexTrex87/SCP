@@ -1,3 +1,43 @@
+[inputs."assets/Flash/flash_1.png"]
+hash = "58503b819820d21ac946f41204c790090a4a35de8b73094edc605472c0234014"
+id = 6084464396
+packable = false
+
+[inputs."assets/Flash/flash_2.png"]
+hash = "2e64c1b8e0ccbc5f4ce949ad7948bcf93997c8125f231c5a274ccca6c04c40d6"
+id = 6084464505
+packable = false
+
+[inputs."assets/Flash/flash_3.png"]
+hash = "9e6be145a5eab77f5919e11a032a03f8e2b0e8a06300bf549f85d5e4c191354f"
+id = 6084464605
+packable = false
+
+[inputs."assets/Flash/flash_4.png"]
+hash = "16682755dfa01a0d6867bb7ec82a882ff87f0432667ee4dfb43f16d9fa3e79d0"
+id = 6084464677
+packable = false
+
+[inputs."assets/Flash/flash_5.png"]
+hash = "5624007fe8e51c948f67da235d0a4310b4d6ef53c56c030d32d86c28dba40571"
+id = 6084464752
+packable = false
+
+[inputs."assets/Flash/flash_6.png"]
+hash = "d9910c184b61b01147d7885d703d54fde56e9ad3b48d4b5b9a83bb1233662ce7"
+id = 6084464824
+packable = false
+
+[inputs."assets/Flash/flash_7.png"]
+hash = "e0f314b91ef28b24ad4920145aaf47f283a84fc6497a01f587228eaac9d00b47"
+id = 6084464900
+packable = false
+
+[inputs."assets/Flash/flash_8.png"]
+hash = "07abfc323d82f8f411c2e4b770231a1e93510b3cfb74de59e20e6d3205703a9b"
+id = 6084464989
+packable = false
+
 [inputs."assets/desert_eagle.png"]
 hash = "1f55ca1e78c544c86d7d47fe64c784f9d64e74e167e4954e7771bb2c8bd21e68"
 id = 6048706726
@@ -11,11 +51,6 @@ packable = false
 [inputs."assets/m249.png"]
 hash = "cebb07ab4d433d4451be9d5d384d06a5a2beeb8433e2d073a832f3440f5e36dd"
 id = 6048706837
-packable = false
-
-[inputs."assets/m249_cursor_hold_normal.png"]
-hash = "6c97cdca54ecc53811885462c1d4d61d3e92d380acd87b314b69c6f91794cdfc"
-id = 6061947395
 packable = false
 
 [inputs."assets/m4a1.png"]
