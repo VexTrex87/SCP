@@ -27,7 +27,8 @@ return function(tool, gunTag)
             ammo = waitForPath(tool, "Values.Ammo"),
         },
         sounds = {
-            hit = waitForPath(tool, "Sounds.Hit"),
+            headHit = waitForPath(tool, "Sounds.HeadHit"),
+            bodyHit = waitForPath(tool, "Sounds.BodyHit"),
             jam = waitForPath(tool, "Sounds.Jam"),
         },
         temp = {

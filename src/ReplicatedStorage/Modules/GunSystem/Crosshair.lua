@@ -5,6 +5,7 @@ local module = {}
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Debris = game:GetService("Debris")
 local createScreenGui = require(ReplicatedStorage.GuiElements.GunSystem.Crosshair.ScreenGui)
 
 -- // FUNCTIONS \\ --
@@ -56,6 +57,23 @@ function module.updateTargetType(gunTag, targetType)
 	for _,element in pairs(newCrosshair:GetChildren()) do
 		element.BackgroundColor3 = newColor
 	end
+end
+
+function module.showDamageDone(gunTag, damageType)
+	local Configuration = require(ReplicatedStorage.Configuration.GunSystem[gunTag]).UI.crosshair
+	local newCrosshair = getCrosshair(gunTag).Parent
+
+	-- create damage done GUI clone
+	local newDamageDoneGUI = newCrosshair.DamageDone:Clone()
+	newDamageDoneGUI.Parent = newCrosshair
+
+	local newColor = damageType == "HEAD" and Configuration.damageDoneHeadColor or Configuration.damageDoneBodyColor
+	for _,element in pairs(newDamageDoneGUI:GetChildren()) do
+		element.BackgroundColor3 = newColor
+	end
+
+	newDamageDoneGUI.Visible = true
+	Debris:AddItem(newDamageDoneGUI, Configuration.damageDoneShowDuration)
 end
 
 function module.create()

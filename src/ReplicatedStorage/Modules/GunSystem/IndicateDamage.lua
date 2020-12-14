@@ -1,9 +1,12 @@
 local Debris = game:GetService("Debris")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local playSound = require(ReplicatedStorage.Modules.Core.PlaySound)
-local randomNumber = require(ReplicatedStorage.Modules.Core.RandomNumber)
-local newTween = require(ReplicatedStorage.Modules.Core.NewTween)
+local modules = ReplicatedStorage.Modules
+local core = modules.Core
+local playSound = require(core.PlaySound)
+local randomNumber = require(core.RandomNumber)
+local newTween = require(core.NewTween)
+local Crosshair = require(modules.GunSystem.Crosshair)
 
 return function(self, targetCharacter, damageType, damageAmount)
     -- find humanoid root part
@@ -11,6 +14,8 @@ return function(self, targetCharacter, damageType, damageAmount)
     if not root then
         return
     end
+
+    Crosshair.showDamageDone(self.Configuration.tag, damageType:upper())
 
     -- create new indicator
     local newIndicator = self.tool.UI.DamageIndicator:Clone()
@@ -23,7 +28,7 @@ return function(self, targetCharacter, damageType, damageAmount)
     newIndicator.Enabled = true
     newIndicator.Parent = root 
     Debris:AddItem(newIndicator, self.Configuration.UI.damageIndicator.maxduration)
-    playSound(self.sounds.hit, self.tool.Handle)
+    playSound(damageType == "head" and self.sounds.headHit or self.sounds.bodyHit, self.tool.Handle)
 
     local minOffset = self.Configuration.UI.damageIndicator.minOffset
     local maxOffset = self.Configuration.UI.damageIndicator.minOffset

@@ -65,7 +65,10 @@ return {
             zoomedSize = UDim2.new(0, 44, 0, 44),
             neutralColor = Color3.fromRGB(255, 255, 255),
             friendlyColor = Color3.fromRGB(0, 255, 0),
-            enemyColor = Color3.fromRGB(255, 0, 0)
+            enemyColor = Color3.fromRGB(255, 0, 0),
+            damageDoneBodyColor = Color3.fromRGB(255, 0, 0),
+            damageDoneHeadColor = Color3.fromRGB(255, 255, 0),
+            damageDoneShowDuration = 0.2,
         }
 	},
     effects = {
