@@ -1,4 +1,8 @@
-return function(self)
+return function(self, player)
+    if player ~= self.owner then
+        player:Kick("It looks like you tried to change the fire mode of " .. self.owner.Name .. "'s gun. (Attempted to fire " .. self.owner.Name .. "'s remote.)")
+    end
+
     local fireModes = self.Configuration.gun.fireMode
     local oldFireModeIndex = table.find(fireModes, self.values.fireMode.Value)
     local newFireMode

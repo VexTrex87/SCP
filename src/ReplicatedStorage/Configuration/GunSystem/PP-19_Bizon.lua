@@ -1,6 +1,6 @@
 return {
-    name = "M249",
-    tag = "M249",
+    name = "PP-19 Bizon",
+    tag = "PP-19_Bizon",
     gun = {
         fireRate = 700, -- rounds per minute
         magazineAmmo = 53,
