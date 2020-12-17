@@ -1,6 +1,6 @@
 return {
-    name = "M249",
-    tag = "M249",
+    name = "UMP45",
+    tag = "UMP45",
     gun = {
         fireRate = 600, -- rounds per minute
         magazineAmmo = 25,
@@ -18,8 +18,14 @@ return {
         bulletMaxDist = 100, -- studs
         bulletGravity = Vector3.new(0, -workspace.Gravity, 0),
         bulletLengthMultiplier = 200,
-        minBulletSpreadAngle = 0, -- between 0 and 180, in degrees
-        maxBulletSpreadAngle = 2.2, -- between 0 and 180, in degrees
+        spread = {
+            ADSMin = 0,
+            ADSMax = 1.1,
+            unaimedMin = 1.1,
+            unaimedMax = 2.2,
+            currentMin = 0,
+            currentMax = 0,
+        },
         properties = {
             Material = Enum.Material.Neon,
             Color = Color3.fromRGB(255, 123, 123),

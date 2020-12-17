@@ -24,7 +24,7 @@ return function(self, input, gameProcessed)
             shoot(self)
         end
     elseif input.UserInputType == self.Configuration.keybinds.aim then
-        aim(self, true)
+        aim(self, true, true)
     elseif input.KeyCode == self.Configuration.keybinds.leanLeft then
         ThirdPersonCamera:SetShoulderDirection(-1)
     elseif input.KeyCode == self.Configuration.keybinds.leanRight then
