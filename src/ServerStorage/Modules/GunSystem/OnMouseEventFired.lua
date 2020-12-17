@@ -15,7 +15,7 @@ return function(self, player, mousePoint)
         return
     end	
 
-    if self.values.ammo.Value <= 0 then
+    if self.values.magazineAmmo.Value <= 0 then
         return false, "NO_AMMO"
     end
     
@@ -23,7 +23,7 @@ return function(self, player, mousePoint)
     self.fastCast.castParams.FilterDescendantsInstances = {player.Character}
     self.temp.canFire = false
     self.temp.timeOfRecentFire = os.clock()
-    self.values.ammo.Value -= 1
+    self.values.magazineAmmo.Value -= 1
 	shootBullet(self, mouseDirection, player)
 	self.temp.canFire = true
 end

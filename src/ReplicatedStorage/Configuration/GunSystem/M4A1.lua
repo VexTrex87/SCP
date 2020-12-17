@@ -3,7 +3,8 @@ return {
     tag = "M249",
     gun = {
         fireRate = 900, -- rounds per minute
-        maxAmmo = 30,
+        magazineAmmo = 30,
+        totalAmmo = 120,
         reloadDuration = 5,
         damageTypes = {
             head = {partNames = {"Head"}, amount = 35},

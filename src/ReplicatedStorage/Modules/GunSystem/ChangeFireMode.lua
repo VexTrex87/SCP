@@ -13,8 +13,8 @@ return function(self)
             gunName = self.Configuration.name,
             gunTag = self.Configuration.tag,
             fireMode = self.values.fireMode.Value,
-            currentAmmo = self.values.ammo.Value,
-            maxAmmo = self.Configuration.gun.maxAmmo,
+            magazineAmmo = self.values.magazineAmmo.Value,
+            totalAmmo = self.values.totalAmmo.Value,
         })
         initEvents(self)
     end
