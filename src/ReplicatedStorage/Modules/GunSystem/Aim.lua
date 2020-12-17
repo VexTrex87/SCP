@@ -2,12 +2,15 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ThirdPersonCamera = require(ReplicatedStorage.Modules.ThirdPersonCamera)
 local Crosshair = require(ReplicatedStorage.Modules.GunSystem.Crosshair)
 
-return function(self, willAim: boolean)
+return function(self, willAim: boolean, willZoom: boolean)
     if self.temp.states.isReloading then
         return
     end
 
-    ThirdPersonCamera:SetActiveCameraSettings(willAim and "ZoomedShoulder" or "DefaultShoulder")
+    if willZoom then
+        ThirdPersonCamera:SetActiveCameraSettings(willAim and "ZoomedShoulder" or "DefaultShoulder")
+    end
+    
     Crosshair.zoom(self.Configuration.tag, willAim)
     self.temp.states.isAiming = willAim
 
