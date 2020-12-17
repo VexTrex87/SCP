@@ -1,11 +1,9 @@
 local ServerStorage = game:GetService("ServerStorage")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
 local playEffects = require(ServerStorage.Modules.PlayEffects)
 
 return function(self, direction, sender)	
 	local directionalCF = CFrame.new(Vector3.new(), direction)
-	direction = (directionalCF * CFrame.fromOrientation(0, 0, Random.new():NextNumber(0, math.pi * 2)) * CFrame.fromOrientation(math.rad(Random.new():NextNumber(self.Configuration.bullet.currentMinBulletSpreadAngle, self.Configuration.bullet.currentMaxBulletSpreadAngle)), 0, 0)).LookVector
+	direction = (directionalCF * CFrame.fromOrientation(0, 0, Random.new():NextNumber(0, math.pi * 2)) * CFrame.fromOrientation(math.rad(Random.new():NextNumber(self.Configuration.bullet.minBulletSpreadAngle, self.Configuration.bullet.maxBulletSpreadAngle)), 0, 0)).LookVector
 
 	local root = self.tool.Parent:WaitForChild("HumanoidRootPart", 1)
 	local myMovementSpeed = root.Velocity
