@@ -30,4 +30,7 @@ return function(self)
 	self.values.totalAmmo.Value = self.Configuration.gun.totalAmmo
 	self.values.totalAmmo.Value -= self.Configuration.gun.magazineAmmo
 	self.values.magazineAmmo.Value = self.Configuration.gun.magazineAmmo
+
+	self.Configuration.bullet.spread.currentMin = self.Configuration.bullet.spread.unaimedMin
+	self.Configuration.bullet.spread.currentMax = self.Configuration.bullet.spread.unaimedMax
 end

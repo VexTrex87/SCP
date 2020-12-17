@@ -18,8 +18,14 @@ return {
         bulletMaxDist = 100, -- studs
         bulletGravity = Vector3.new(0, -workspace.Gravity, 0),
         bulletLengthMultiplier = 200,
-        minBulletSpreadAngle = 0, -- between 0 and 180, in degrees
-        maxBulletSpreadAngle = 3.3, -- between 0 and 180, in degrees
+        spread = {
+            ADSMin = 0,
+            ADSMax = 1.7,
+            unaimedMin = 1.7,
+            unaimedMax = 3.4,
+            currentMin = 0,
+            currentMax = 0,
+        },
         properties = {
             Material = Enum.Material.Neon,
             Color = Color3.fromRGB(255, 123, 123),

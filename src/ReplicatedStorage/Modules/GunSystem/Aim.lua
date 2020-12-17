@@ -7,19 +7,17 @@ return function(self, willAim: boolean, willZoom: boolean)
         return
     end
 
-    if willZoom then
-        ThirdPersonCamera:SetActiveCameraSettings(willAim and "ZoomedShoulder" or "DefaultShoulder")
-    end
+    ThirdPersonCamera:SetActiveCameraSettings(willAim and willZoom and "ZoomedShoulder" or "DefaultShoulder")
+    Crosshair.zoom(self.Configuration.tag, willAim and willZoom)
     
-    Crosshair.zoom(self.Configuration.tag, willAim)
     self.temp.states.isAiming = willAim
 
     if willAim then
+        self.animations.hold:Stop()
         self.animations.aim:Play()
-        self.remotes.ChangeState:FireServer("AIM_IN")
     else
         self.animations.aim:Stop()
         self.animations.hold:Play()
-        self.remotes.ChangeState:FireServer("AIM_OUT")
     end
+    self.remotes.ChangeState:FireServer(willAim and "AIM_IN" or "AIM_OUT", willAim, willZoom)
 end
