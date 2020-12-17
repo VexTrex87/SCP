@@ -24,13 +24,23 @@ return function(self)
         onMovementStateChanged(self, ...)
     end)
 
-    self.temp.connections.ammoChanged = self.values.ammo.Changed:Connect(function()
+    self.temp.connections.magazineAmmoChanged = self.values.magazineAmmo.Changed:Connect(function()
         GunInfoGUI.update({
             gunName = self.Configuration.name,
             gunTag = self.Configuration.tag,
             fireMode = self.values.fireMode.Value,
-            currentAmmo = self.values.ammo.Value,
-            maxAmmo = self.Configuration.gun.maxAmmo,
+            magazineAmmo = self.values.magazineAmmo.Value,
+            totalAmmo = self.values.totalAmmo.Value,
+        })
+    end)
+
+    self.temp.connections.totalAmmoChanged = self.values.totalAmmo.Changed:Connect(function()
+        GunInfoGUI.update({
+            gunName = self.Configuration.name,
+            gunTag = self.Configuration.tag,
+            fireMode = self.values.fireMode.Value,
+            magazineAmmo = self.values.magazineAmmo.Value,
+            totalAmmo = self.values.totalAmmo.Value,
         })
     end)
 

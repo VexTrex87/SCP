@@ -17,7 +17,8 @@ return function(tool, gunTag)
         Configuration = require(ReplicatedStorage.Configuration.GunSystem[gunTag]),
         values = {
             fireMode = tool.Values.FireMode,
-            ammo = tool.Values.Ammo,
+            magazineAmmo = tool.Values.MagazineAmmo,
+            totalAmmo = tool.Values.TotalAmmo,
         },
         sounds = {
             equip = tool.Sounds.Equip,

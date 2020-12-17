@@ -24,7 +24,8 @@ return function(tool, gunTag)
         },
         values = {
             fireMode = waitForPath(tool, "Values.FireMode"),
-            ammo = waitForPath(tool, "Values.Ammo"),
+            magazineAmmo = waitForPath(tool, "Values.MagazineAmmo"),
+            totalAmmo = waitForPath(tool, "Values.TotalAmmo"),
         },
         sounds = {
             headHit = waitForPath(tool, "Sounds.HeadHit"),
@@ -48,7 +49,8 @@ return function(tool, gunTag)
                 stepped = nil,
                 damageIndicatorFired = nil,
                 movementStateChanged = nil,
-                ammoChanged = nil,
+                magazineAmmoChanged = nil,
+                totalAmmoChanged = nil,
             },
             crosshair = {
                 currentTarget = nil,

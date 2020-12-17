@@ -1,5 +1,10 @@
 return function(self)
-    if self.temp.states.isAiming or self.temp.states.isReloading or self.temp.states.currentAnimationState ~= "WALK" or self.temp.states.isMouseDown then
+    if self.temp.states.isAiming or 
+        self.temp.states.isReloading or 
+        self.temp.states.currentAnimationState ~= "WALK" or 
+        self.temp.states.isMouseDown or
+        self.values.totalAmmo.Value <= 0
+    then
         return
     end
 
