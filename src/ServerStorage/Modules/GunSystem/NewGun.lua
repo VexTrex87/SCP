@@ -22,7 +22,6 @@ return function(tool, gunTag)
         },
         sounds = {
             equip = tool.Sounds.Equip,
-            unequip = tool.Sounds.Unequip,
             shoot = tool.Sounds.Shoot,
             reload = tool.Sounds.Reload,
         },
