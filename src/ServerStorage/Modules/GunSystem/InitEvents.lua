@@ -1,4 +1,5 @@
 local ServerStorage = game:GetService("ServerStorage")
+local Players = game:GetService("Players")
 
 local components = ServerStorage.Modules.GunSystem
 local onRayHit = require(components.OnRayHit)
@@ -8,6 +9,7 @@ local onChangeStateFired = require(components.OnChangeStateFired)
 local onChangeFireMode = require(components.OnChangeFireMode)
 local onMouseEventFired = require(components.OnMouseEventFired)
 local onToolAncestryChanged = require(components.OnToolAncestryChanged)
+local destroyGun = require(components.DestroyGun)
 
 return function(self)
 	self.temp.connections.onRayHit = self.fastCast.caster.RayHit:Connect(function(...)
@@ -36,5 +38,9 @@ return function(self)
     
     self.tool.AncestryChanged:Connect(function(...)
         onToolAncestryChanged(self, ...)
+    end)
+
+    self.owner.Character.Humanoid.Died:Connect(function()
+        destroyGun(self)
     end)
 end
