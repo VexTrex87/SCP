@@ -26,9 +26,9 @@ end
 -- return
 
 function module.show(gunTag)
-	local configuration = require(ReplicatedStorage.Configuration.GunSystem[gunTag]).UI.crosshair
 	UserInputService.MouseIconEnabled = false
-	
+
+	local configuration = require(ReplicatedStorage.Configuration.GunSystem[gunTag]).UI.crosshair
 	local newCrosshair = getCrosshair(gunTag)
 	newCrosshair.Size = UDim2.new(0, 1, 0, 1)
 	newCrosshair.Visible = true
@@ -36,11 +36,12 @@ function module.show(gunTag)
 end
 
 function module.hide(gunTag)
+	UserInputService.MouseIconEnabled = true
+
 	local configuration = require(ReplicatedStorage.Configuration.GunSystem[gunTag]).UI.crosshair
 	local newCrosshair = getCrosshair(gunTag)
 	newTween(newCrosshair, configuration.showTweenInfo, {Size = UDim2.new(0, 1, 0, 1)}).Completed:Wait()
 	newCrosshair.Visible = false
-	UserInputService.MouseIconEnabled = true
 end
 
 function module.zoom(gunTag, isZoomed)

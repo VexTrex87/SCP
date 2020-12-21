@@ -2,6 +2,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local modules = ReplicatedStorage.Modules
 local ThirdPersonCamera = require(modules.ThirdPersonCamera)
+local newThread = require(modules.Core.NewThread)
 
 local components = modules.GunSystem
 local Crosshair = require(components.Crosshair)
@@ -19,8 +20,8 @@ return function(self, mouse)
         ThirdPersonCamera:SetCharacterAlignment(true)
     end
 
-    Crosshair.show(self.Configuration.tag)
-    GunInfoGUI.show({
+    newThread(Crosshair.show, self.Configuration.tag)
+    newThread(GunInfoGUI.show, {
         gunName = self.Configuration.name,
         gunTag = self.Configuration.tag,
         fireMode = self.values.fireMode.Value,
