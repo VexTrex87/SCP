@@ -12,6 +12,7 @@ return function(tool, gunTag)
     local animator = humanoid:WaitForChild("Animator")
 
     local self = {
+        humanoid = humanoid,
         tool = tool,
         remotes = tool:WaitForChild("Remotes"),
         movementStateChanged = ReplicatedStorage.Objects.Remotes.Movement.StateChanged,

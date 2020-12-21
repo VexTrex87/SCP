@@ -16,10 +16,10 @@ local GunInfoGUI = require(components.GunInfoGUI)
 local Crosshair = require(components.Crosshair)
 local newGun = require(components.NewGun)
 
-GunInfoGUI.create()
-Crosshair.create()
-
 return function()
+    GunInfoGUI.create()
+    Crosshair.create()
+
     collection(GlobalConfiguration.gunTag, function(tool)
         -- check if tool is in a player's backpack
         local backpack = Players.LocalPlayer:WaitForChild("Backpack")
