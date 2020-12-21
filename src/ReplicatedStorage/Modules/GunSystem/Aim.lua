@@ -3,7 +3,7 @@ local ThirdPersonCamera = require(ReplicatedStorage.Modules.ThirdPersonCamera)
 local Crosshair = require(ReplicatedStorage.Modules.GunSystem.Crosshair)
 
 return function(self, willAim: boolean, willZoom: boolean)
-    if self.temp.states.isReloading then
+    if self.temp.states.isReloading or self.temp.states.isAiming == willAim then
         return
     end
 
