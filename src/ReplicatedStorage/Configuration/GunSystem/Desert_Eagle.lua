@@ -15,7 +15,7 @@ return {
     },
     bullet = {
         bulletSpeed = 1700, -- studs/sec
-        bulletMaxDist = 80, -- studs
+        bulletMaxDist = 400, -- studs
         bulletGravity = Vector3.new(0, -workspace.Gravity, 0),
         bulletLengthMultiplier = 200,
         spread = {
