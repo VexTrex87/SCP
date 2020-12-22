@@ -3,11 +3,11 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local disconnectConnections = require(ReplicatedStorage.Modules.Core.DisconnectConnections)
 local newThread = require(ReplicatedStorage.Modules.Core.NewThread)
 local ThirdPersonCamera = require(ReplicatedStorage.Modules.ThirdPersonCamera)
+local waistMovement = require(ReplicatedStorage.Modules.WaistMovement)
 
 local gunComponents = ReplicatedStorage.Modules.GunSystem
 local Crosshair = require(gunComponents.Crosshair)
 local GunInfoGUI = require(gunComponents.GunInfoGUI)
-local waistMovement = require(gunComponents.WaistMovement)
 
 return function(self)
     self.temp.states.isEquipped = false
@@ -38,7 +38,7 @@ return function(self)
         end
     end
 
-    waistMovement.stop()
+    newThread(waistMovement.stop)
     newThread(Crosshair.hide, self.Configuration.tag)
     newThread(GunInfoGUI.hide, {
         gunName = self.Configuration.name,
@@ -47,5 +47,4 @@ return function(self)
         magazineAmmo = self.values.magazineAmmo.Value,
         totalAmmo = self.values.totalAmmo.Value,
     })
-
 end

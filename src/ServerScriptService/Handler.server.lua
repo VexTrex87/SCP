@@ -15,6 +15,7 @@ local createAnimator = require(modules.CreateAnimator)
 local overrideAnimations = require(modules.OverrideAnimations)
 local gunSystem = require(modules.GunSystem)
 local npcHandler = require(modules.NPCHandler)
+local waistMovement = require(modules.WaistMovement)
 
 -- // EVENTS \\ --
 
@@ -27,3 +28,4 @@ end)
 
 newThread(gunSystem)
 newThread(npcHandler)
+newThread(waistMovement)

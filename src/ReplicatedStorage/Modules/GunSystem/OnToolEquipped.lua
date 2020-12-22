@@ -2,13 +2,13 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local modules = ReplicatedStorage.Modules
 local ThirdPersonCamera = require(modules.ThirdPersonCamera)
+local waistMovement = require(modules.WaistMovement)
 local newThread = require(modules.Core.NewThread)
 
 local components = modules.GunSystem
 local Crosshair = require(components.Crosshair)
 local GunInfoGUI = require(components.GunInfoGUI)
 local initEquipEvents = require(components.InitEquipEvents)
-local waistMovement = require(components.WaistMovement)
 
 return function(self, mouse)
     self.temp.states.isEquipped = true
@@ -21,7 +21,7 @@ return function(self, mouse)
         ThirdPersonCamera:SetCharacterAlignment(true)
     end
 
-    waistMovement.start()
+    newThread(waistMovement.start)
     newThread(Crosshair.show, self.Configuration.tag)
     newThread(GunInfoGUI.show, {
         gunName = self.Configuration.name,

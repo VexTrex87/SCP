@@ -21,3 +21,8 @@ newThread(function()
     local effectsListener = require(modules.EffectsListener)
     effectsListener()
 end)
+
+newThread(function()
+    local waistMovement = require(modules.WaistMovement)
+    waistMovement.init()
+end)
