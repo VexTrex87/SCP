@@ -1,9 +1,11 @@
 local ServerStorage = game:GetService("ServerStorage")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local modules = ServerStorage.Modules
 local core = modules.Core
 local getCharacterFromBodyPart = require(core.GetCharacterFromBodyPart)
 local playEffects = require(ServerStorage.Modules.PlayEffects)
+local checkTargetType = require(ReplicatedStorage.Modules.GunSystem.CheckTargetType)
 
 return function(self, info)
     local damageType, damageAmount
@@ -18,7 +20,7 @@ return function(self, info)
     playEffects("BulletHit", self.effects.impactParticle, hitPart, CFrame.new(hitPoint, hitPoint + normal), self.Configuration.effects.impactParticleDuration)
 
     local character = getCharacterFromBodyPart(hitPart) or hitPart.Parent:FindFirstChildWhichIsA("Humanoid") and hitPart.Parent
-    if not character then
+    if not character or checkTargetType(character) ~= "ENEMY" then
         return
     end
 
