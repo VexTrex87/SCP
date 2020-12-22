@@ -39,6 +39,7 @@ return function(tool, gunTag)
             states = {
                 isEquipped = false,
                 isAiming = false,
+                isZoomed = false,
                 isReloading = false,
                 isMouseDown = false,
                 currentAnimationState = "WALK"

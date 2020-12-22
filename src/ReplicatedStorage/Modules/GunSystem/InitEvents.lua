@@ -11,8 +11,8 @@ return function(self)
         onToolEquipped(self, ...)
     end)
 
-    self.tool.Unequipped:Connect(function(...)
-        onToolUnequipped(self, ...)
+    self.tool.Unequipped:Connect(function()
+        onToolUnequipped(self)
     end)
 
     self.remotes.DamageIndicator.OnClientEvent:Connect(function(...)

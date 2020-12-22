@@ -3,7 +3,10 @@ local ThirdPersonCamera = require(ReplicatedStorage.Modules.ThirdPersonCamera)
 local Crosshair = require(ReplicatedStorage.Modules.GunSystem.Crosshair)
 
 return function(self, willAim: boolean, willZoom: boolean)
-    if self.temp.states.isReloading or self.temp.states.isAiming == willAim then
+    
+    warn(self.temp.states.isAiming and "Was Aiming" or "Was Not Aiming", willAim and "Now Aiming" or "Not Aiming")
+
+    if self.temp.states.isReloading then
         return
     end
 
@@ -11,6 +14,7 @@ return function(self, willAim: boolean, willZoom: boolean)
     Crosshair.zoom(self.Configuration.tag, willAim and willZoom)
     
     self.temp.states.isAiming = willAim
+    self.temp.states.isZoomed = willZoom
 
     if willAim then
         self.animations.hold:Stop()
@@ -19,5 +23,6 @@ return function(self, willAim: boolean, willZoom: boolean)
         self.animations.aim:Stop()
         self.animations.hold:Play()
     end
+    
     self.remotes.ChangeState:FireServer(willAim and "AIM_IN" or "AIM_OUT", willAim, willZoom)
 end
