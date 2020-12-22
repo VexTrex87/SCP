@@ -6,6 +6,9 @@ local initEvents = require(ReplicatedStorage.Modules.GunSystem.InitEvents)
 local loadAnimation = require(ReplicatedStorage.Modules.Core.LoadAnimation)
 
 return function(tool, gunTag)
+    local objectStorage = ReplicatedStorage.Objects.GunSystem
+    local animationStorage = objectStorage.Animations[gunTag]
+
     local player = Players.LocalPlayer
     local character = player.Character
     local humanoid = character:WaitForChild("Humanoid")
@@ -18,10 +21,10 @@ return function(tool, gunTag)
         movementStateChanged = ReplicatedStorage.Objects.Movement.Remotes.StateChanged,
         Configuration = require(ReplicatedStorage.Configuration.GunSystem[gunTag]),
         animations = {
-            hold = loadAnimation(animator, waitForPath(tool, "Animations.Hold")),
-            runningHold = loadAnimation(animator, waitForPath(tool, "Animations.RunningHold", 1)),
-            aim = loadAnimation(animator, waitForPath(tool, "Animations.Aim")),
-            reload = loadAnimation(animator, waitForPath(tool, "Animations.Reload")),
+            hold = loadAnimation(animator, animationStorage.Hold),
+            runningHold = loadAnimation(animator, animationStorage:FindFirstChild("RunningHold")),
+            aim = loadAnimation(animator, animationStorage.Aim),
+            reload = loadAnimation(animator, animationStorage.Reload),
         },
         values = {
             fireMode = waitForPath(tool, "Values.FireMode"),
