@@ -15,7 +15,7 @@ return function(tool, gunTag)
         humanoid = humanoid,
         tool = tool,
         remotes = tool:WaitForChild("Remotes"),
-        movementStateChanged = ReplicatedStorage.Objects.Remotes.Movement.StateChanged,
+        movementStateChanged = ReplicatedStorage.Objects.Movement.Remotes.StateChanged,
         Configuration = require(ReplicatedStorage.Configuration.GunSystem[gunTag]),
         animations = {
             hold = loadAnimation(animator, waitForPath(tool, "Animations.Hold")),
