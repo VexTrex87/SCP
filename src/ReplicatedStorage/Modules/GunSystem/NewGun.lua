@@ -21,6 +21,9 @@ return function(tool, gunTag)
         remotes = tool:WaitForChild("Remotes"),
         movementStateChanged = ReplicatedStorage.Objects.Movement.Remotes.StateChanged,
         Configuration = require(ReplicatedStorage.Configuration.GunSystem[gunTag]),
+        GUI = {
+            damageIndicator = objectStorage.GUI[gunTag].DamageIndicator
+        },
         animations = {
             hold = loadAnimation(animator, animationStorage.Hold),
             runningHold = loadAnimation(animator, animationStorage:FindFirstChild("RunningHold")),
