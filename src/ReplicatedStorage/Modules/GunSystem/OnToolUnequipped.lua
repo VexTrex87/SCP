@@ -4,8 +4,9 @@ local disconnectConnections = require(ReplicatedStorage.Modules.Core.DisconnectC
 local newThread = require(ReplicatedStorage.Modules.Core.NewThread)
 local ThirdPersonCamera = require(ReplicatedStorage.Modules.ThirdPersonCamera)
 
-local Crosshair = require(ReplicatedStorage.Modules.GunSystem.Crosshair)
-local GunInfoGUI = require(ReplicatedStorage.Modules.GunSystem.GunInfoGUI)
+local gunComponents = ReplicatedStorage.Modules.GunSystem
+local Crosshair = require(gunComponents.Crosshair)
+local GunInfoGUI = require(gunComponents.GunInfoGUI)
 
 return function(self)
     self.temp.states.isEquipped = false
@@ -27,9 +28,12 @@ return function(self)
         self.animations.runningHold:Stop()
     end
 
-    for _,sound in pairs(self.tool.Handle:GetChildren()) do
-        if sound:IsA("Sound") then
-            sound:Destroy()
+    local handle = self.tool:FindFirstChild("Handle")
+    if handle then
+        for _,sound in pairs(self.tool.Handle:GetChildren()) do
+            if sound:IsA("Sound") then
+                sound:Destroy()
+            end
         end
     end
 
