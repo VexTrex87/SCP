@@ -8,6 +8,7 @@ local loadAnimation = require(ReplicatedStorage.Modules.Core.LoadAnimation)
 return function(tool, gunTag)
     local objectStorage = ReplicatedStorage.Objects.GunSystem
     local animationStorage = objectStorage.Animations[gunTag]
+    local soundStorage = objectStorage.Sounds[gunTag]
 
     local player = Players.LocalPlayer
     local character = player.Character
@@ -32,9 +33,9 @@ return function(tool, gunTag)
             totalAmmo = waitForPath(tool, "Values.TotalAmmo"),
         },
         sounds = {
-            headHit = waitForPath(tool, "Sounds.HeadHit"),
-            bodyHit = waitForPath(tool, "Sounds.BodyHit"),
-            jam = waitForPath(tool, "Sounds.Jam"),
+            headHit = soundStorage.HeadHit,
+            bodyHit = soundStorage.BodyHit,
+            jam = soundStorage.Jam,
         },
         temp = {
             mouse = nil,
