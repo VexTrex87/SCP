@@ -8,6 +8,7 @@ local components = modules.GunSystem
 local Crosshair = require(components.Crosshair)
 local GunInfoGUI = require(components.GunInfoGUI)
 local initEquipEvents = require(components.InitEquipEvents)
+local waistMovement = require(components.WaistMovement)
 
 return function(self, mouse)
     self.temp.states.isEquipped = true
@@ -20,6 +21,7 @@ return function(self, mouse)
         ThirdPersonCamera:SetCharacterAlignment(true)
     end
 
+    waistMovement.start()
     newThread(Crosshair.show, self.Configuration.tag)
     newThread(GunInfoGUI.show, {
         gunName = self.Configuration.name,

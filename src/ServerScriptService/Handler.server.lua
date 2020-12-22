@@ -20,7 +20,7 @@ local npcHandler = require(modules.NPCHandler)
 
 Players.PlayerAdded:Connect(function(player)
     player.CharacterAdded:Connect(createAnimator)
-    player.CharacterAppearanceLoaded:Connect(overrideAnimations)
+    -- player.CharacterAppearanceLoaded:Connect(overrideAnimations)
 end)
 
 -- // COMPILE \\ --
