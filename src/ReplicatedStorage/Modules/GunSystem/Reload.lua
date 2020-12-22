@@ -6,12 +6,6 @@ return function(self)
         Aim(self, false, false)
     end
 
-    print(self.temp.states.isReloading )
-    print(self.temp.states.currentAnimationState ~= "WALK" )
-    print(self.temp.states.isMouseDown)
-    print(self.values.totalAmmo.Value <= 0)
-    warn("-----------------")
-
     if self.temp.states.isReloading or 
         self.temp.states.currentAnimationState ~= "WALK" or 
         self.temp.states.isMouseDown or
