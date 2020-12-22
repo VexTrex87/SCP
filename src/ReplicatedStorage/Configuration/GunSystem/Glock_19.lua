@@ -20,9 +20,9 @@ return {
         bulletLengthMultiplier = 200,
         spread = {
             ADSMin = 0,
-            ADSMax = 1.3,
-            unaimedMin = 1.3,
-            unaimedMax = 2.6,
+            ADSMax = 3.9,
+            unaimedMin = 3.9,
+            unaimedMax = 7.8,
             currentMin = 0,
             currentMax = 0,
         },
