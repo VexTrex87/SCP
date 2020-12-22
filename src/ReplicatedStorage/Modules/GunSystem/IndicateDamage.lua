@@ -18,7 +18,7 @@ return function(self, targetCharacter, damageType, damageAmount)
     Crosshair.showDamageDone(self.Configuration.tag, damageType:upper())
 
     -- create new indicator
-    local newIndicator = self.tool.UI.DamageIndicator:Clone()
+    local newIndicator = self.GUI.damageIndicator:Clone()
     newIndicator.TextLabel.Text = damageAmount
 
     for propertyName, propertyValue in pairs(self.Configuration.UI.damageIndicator[damageType]) do

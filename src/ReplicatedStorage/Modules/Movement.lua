@@ -8,8 +8,8 @@ local Configuration = require(ReplicatedStorage.Configuration.Movement)
 local newTween = require(ReplicatedStorage.Modules.Core.NewTween)
 local disconnectConnections = require(ReplicatedStorage.Modules.Core.DisconnectConnections)
 
-local animationStorage = ReplicatedStorage.Objects.Animations.Movement
-local stateChanged = ReplicatedStorage.Objects.Remotes.Movement.StateChanged
+local animationStorage = ReplicatedStorage.Objects.Movement.Animations
+local stateChanged = ReplicatedStorage.Objects.Movement.Remotes.StateChanged
 
 function module.new(character)
 	-- variables

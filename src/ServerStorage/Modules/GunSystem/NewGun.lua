@@ -9,6 +9,9 @@ local setDefaults = require(components.SetDefaults)
 local initEvents = require(components.InitEvents)
 
 return function(tool, gunTag)
+    local objectStorage = ReplicatedStorage.Objects.GunSystem
+    local soundStorage = objectStorage.Sounds[gunTag]
+
     local self = {
         tool = tool,
         handle = tool.Handle,
@@ -21,9 +24,9 @@ return function(tool, gunTag)
             totalAmmo = tool.Values.TotalAmmo,
         },
         sounds = {
-            equip = tool.Sounds.Equip,
-            shoot = tool.Sounds.Shoot,
-            reload = tool.Sounds.Reload,
+            equip = soundStorage.Equip,
+            shoot = soundStorage.Shoot,
+            reload = soundStorage.Reload,
         },
         effects = {
             impactParticle = tool.Handle.ImpactParticle,
