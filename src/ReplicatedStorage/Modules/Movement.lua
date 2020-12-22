@@ -57,7 +57,7 @@ function module:onInputBegan(input, gameProcessed)
 	if input.KeyCode == Configuration.keybinds.sprint then
 		self.humanoid.WalkSpeed = Configuration.speeds.sprint
 		newTween(self.camera, Configuration.povTweenInfo, {FieldOfView = Configuration.fov.sprint})
-		self.animations.sprint:Play()
+		self.animations.sprint:Play(0.1, 1, 2.5)
 		stateChanged:Fire("SPRINT")
 	elseif input.KeyCode == Configuration.keybinds.crouch then
 		self.humanoid.WalkSpeed = Configuration.speeds.crouch

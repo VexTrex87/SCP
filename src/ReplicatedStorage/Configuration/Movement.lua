@@ -1,8 +1,8 @@
 return {
     speeds = {
-        sprint = 16,
-        walk = 5,
-        crouch = 2,
+        sprint = 18,
+        walk = 8,
+        crouch = 4,
     },
     fov = {
         sprint = 70 + (16 / 5),
