@@ -43,9 +43,9 @@ function module.update(info)
 	end)
 
 	newThread(function()
-		local magazineAmmoText = '<font size = "25"><font color = "rgb(255, 255, 255)">' .. info.magazineAmmo .. '</font></font>'
+		local ammoText = '<font size = "25"><font color = "rgb(255, 255, 255)">' .. info.ammo .. '</font></font>'
 		local totalAmmoText = '<font size = "20"><font color = "rgb(200, 200, 200)">/' .. info.totalAmmo .. '</font></font>'
-		local newText = magazineAmmoText .. totalAmmoText
+		local newText = ammoText .. totalAmmoText
 		local element = GUI.Frame.Ammo
 		if element.Text ~= newText then
 			element.Text = newText

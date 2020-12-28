@@ -3,8 +3,7 @@ return {
     tag = "Desert_Eagle",
     gun = {
         fireRate = 400, -- rounds per minute
-        magazineAmmo = 8,
-        totalAmmo = 40,
+        ammo = 8,
         reloadDuration = 2.5,
         damageTypes = {
             head = {partNames = {"Head"}, amount = 56},

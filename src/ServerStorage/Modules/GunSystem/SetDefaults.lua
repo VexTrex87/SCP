@@ -27,9 +27,7 @@ return function(self)
 	self.fastCast.castBehavior.Acceleration = self.Configuration.bullet.bulletGravity
 	self.fastCast.castBehavior.AutoIgnoreContainer = false
     
-	self.values.totalAmmo.Value = self.Configuration.gun.totalAmmo
-	self.values.totalAmmo.Value -= self.Configuration.gun.magazineAmmo
-	self.values.magazineAmmo.Value = self.Configuration.gun.magazineAmmo
+	self.values.ammo.Value = self.Configuration.gun.ammo
 
 	self.values.fireMode.Value = self.Configuration.gun.fireMode[1]
 

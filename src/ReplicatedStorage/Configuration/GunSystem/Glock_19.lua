@@ -3,8 +3,7 @@ return {
     tag = "Glock_19",
     gun = {
         fireRate = 700, -- rounds per minute
-        magazineAmmo = 17,
-        totalAmmo = 102,
+        ammo = 17,
         reloadDuration = 4.5,
         damageTypes = {
             head = {partNames = {"Head"}, amount = 34},

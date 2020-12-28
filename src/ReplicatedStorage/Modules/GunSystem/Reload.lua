@@ -8,9 +8,7 @@ return function(self)
 
     if self.temp.states.isReloading or 
         self.temp.states.currentAnimationState ~= "WALK" or 
-        self.temp.states.isMouseDown or
-        self.values.totalAmmo.Value <= 0 or
-        self.values.magazineAmmo.Value == self.Configuration.gun.magazineAmmo
+        self.temp.states.isMouseDown
     then
         return
     end

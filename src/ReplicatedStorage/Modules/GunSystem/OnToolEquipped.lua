@@ -27,8 +27,8 @@ return function(self, mouse)
         gunName = self.Configuration.name,
         gunTag = self.Configuration.tag,
         fireMode = self.values.fireMode.Value,
-        magazineAmmo = self.values.magazineAmmo.Value,
-        totalAmmo = self.values.totalAmmo.Value,
+        ammo = self.values.ammo.Value,
+        totalAmmo = self.Configuration.gun.ammo,
     })
 
     initEquipEvents(self)

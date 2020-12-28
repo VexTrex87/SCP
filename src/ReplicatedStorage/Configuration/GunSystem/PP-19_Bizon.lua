@@ -3,8 +3,7 @@ return {
     tag = "PP-19_Bizon",
     gun = {
         fireRate = 700, -- rounds per minute
-        magazineAmmo = 53,
-        totalAmmo = 159,
+        ammo = 53,
         reloadDuration = 6.5,
         damageTypes = {
             head = {partNames = {"Head"}, amount = 34},
